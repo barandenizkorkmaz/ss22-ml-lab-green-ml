@@ -47,15 +47,22 @@ models = {
     'resnet152v2':ResNet152V2()
 }
 
+import pandas as pd
+file = 'emissions.csv'
+path = '/content/drive/My Drive/emissions.csv'
+
 NUM_FORWARD_PASS = 50000
 FREQUENCY = 1000
 for model_id, model_name in enumerate(models):
-    tracker = EmissionsTracker(project_name=model_name)
-    tracker.start()
-    model = models[model_name]
-    # GPU intensive training code
-    for i in range(NUM_FORWARD_PASS):
-        if ((i+1) % FREQUENCY) == 0:
-            print(f"Model Id: {model_id + 1}/{len(models)}\tModel: {model_name}\tForward Pass: {i+1}/{NUM_FORWARD_PASS} finished!")
-        output = model.predict(img)
-    emissions = tracker.stop()
+  tracker = EmissionsTracker(project_name=model_name)
+  tracker.start()
+  model = models[model_name]
+  # GPU intensive training code
+  for i in range(NUM_FORWARD_PASS):
+    if ((i+1) % FREQUENCY) == 0:
+      print(f"Model Id: {model_id + 1}/{len(models)}\tModel: {model_name}\tForward Pass: {i+1}/{NUM_FORWARD_PASS} finished!")
+    output = model.predict(img)
+  emissions = tracker.stop()
+  df = pd.read_csv(file)
+  with open(path, 'w', encoding = 'utf-8-sig') as f:
+    df.to_csv(f)
