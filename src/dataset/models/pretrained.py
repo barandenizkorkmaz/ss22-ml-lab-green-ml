@@ -1,5 +1,4 @@
-import tensorflow as tf
-from keras.applications import *
+from tensorflow.keras.applications import *
 
 models = [
     ('DenseNet121',DenseNet121(weights=None)),
