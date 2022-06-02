@@ -4,11 +4,11 @@ import matplotlib.pyplot as plt
 
 def evaluateLayers(model):
     input_size = model.input_shape[1:]
-    resultCombined = evaluate_energy_forward(model, input_size= input_size, batch_size=20, repetitions = 1000)
+    resultCombined = evaluate_energy_forward(model, input_size= input_size, batch_size=20, repetitions = 100)
     resultsIndividually = []
     for layer in model.layers:
         input_size = layer.input_shape[1:] #first parameter is batch_size
-        resultsIndividually.append(evaluate_energy_forward(layer, input_size = input_size, batch_size= 20, repetitions = 1000))
+        resultsIndividually.append(evaluate_energy_forward(layer, input_size = input_size, batch_size= 20, repetitions = 100))
 
     return resultCombined, resultsIndividually
 
@@ -26,7 +26,7 @@ def visualizeCombined(combined, individually, ylabel, title, labels):
     ax1.set_title(title)
     plt.show()
 
-
+#This is ugly at the moment... Should be in a different file
 model1 = tf.keras.models.Sequential([
     tf.keras.layers.Dense(128, activation = "relu", input_shape = (20,)),
     tf.keras.layers.Dense(10)
@@ -56,10 +56,11 @@ model4 = tf.keras.models.Sequential([
 
 
 
+
 #model2.summary()
 
 #visualizeCombined(*evaluateLayers(model2), "Power consumption in kWh", "Combined power consumption vs individual layers", ["LSTM", "Dense"])
 
 #visualizeCombined(*evaluateLayers(model3), "Power consumption in kWh", "Combined power consumption vs individual layers", ["GRU", "LSTM", "Dense"])
 
-visualizeCombined(*evaluateLayers(model4), "Power consumption in kWh", "Combined power consumption vs individual layers", ["Conv64", "Conv64", "MaxPool", "Conv128", "Conv128", "MaxPool", "Flatten", "Dense"])
+#visualizeCombined(*evaluateLayers(model4), "Power consumption in kWh", "Combined power consumption vs individual layers", ["Conv64", "Conv64", "MaxPool", "Conv128", "Conv128", "MaxPool", "Flatten", "Dense"])

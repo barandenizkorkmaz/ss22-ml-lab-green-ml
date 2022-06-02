@@ -20,7 +20,7 @@ def evaluate_energy_forward(model, input_size, batch_size =1, repetitions = 1):
         float: measured average energy consumption of forward pass for the model
     """
     #Create random input:
-    input = np.random.rand(batch_size, *input_size)
+    input = np.random.rand(batch_size, *input_size[1:])
     
     #Run repetitions forward passes and meassure the energy consumption
     tracker = EmissionsTracker(save_to_file= False)

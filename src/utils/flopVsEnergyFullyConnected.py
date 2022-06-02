@@ -48,3 +48,4 @@ def compareHiddenSize():
     visualizePairs(results, xlabel = "Number of FLOPS", ylabel = "Power in kWh", title = "Power consumption vs. FLOPS for fully connected NNs", labels= labels)
 
 compareHiddenSize()
+#compareSimpleFullyConnected()
