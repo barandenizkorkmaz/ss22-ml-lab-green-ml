@@ -1,0 +1,31 @@
+Starting job 6994055
+SLURM assigned me the node(s): gpu07
+[W 13:30:01.353 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
+[I 13:30:01.357 NotebookApp] The port 8888 is already in use, trying another port.
+[I 13:30:01.358 NotebookApp] Serving notebooks from local directory: /nfs/homedirs/kempern/green-ml-daml/src/notebooks
+[I 13:30:01.358 NotebookApp] Jupyter Notebook 6.4.11 is running at:
+[I 13:30:01.358 NotebookApp] http://gpu07:8889/?token=442392613b38a16e0c57257327c33b7a432c296ce925d9c3
+[I 13:30:01.358 NotebookApp]  or http://127.0.0.1:8889/?token=442392613b38a16e0c57257327c33b7a432c296ce925d9c3
+[I 13:30:01.358 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 13:30:01.372 NotebookApp] 
+    
+    To access the notebook, open this file in a browser:
+        file:///nfs/homedirs/kempern/.local/share/jupyter/runtime/nbserver-1414865-open.html
+    Or copy and paste one of these URLs:
+        http://gpu07:8889/?token=442392613b38a16e0c57257327c33b7a432c296ce925d9c3
+     or http://127.0.0.1:8889/?token=442392613b38a16e0c57257327c33b7a432c296ce925d9c3
+[I 13:30:16.724 NotebookApp] 302 GET /?token=442392613b38a16e0c57257327c33b7a432c296ce925d9c3 (172.24.220.30) 0.850000ms
+[I 13:30:36.616 NotebookApp] Creating new notebook in 
+[I 13:30:41.223 NotebookApp] Kernel started: 0bc251aa-a997-414e-bdf1-2ce9750636ae, name: python3
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 38c0aaff-e4f9-4de8-866a-39a779fefb93
+[I 13:32:41.741 NotebookApp] Saving file at /Untitled.ipynb
+[I 13:34:41.552 NotebookApp] Saving file at /Untitled.ipynb
+[I 14:56:41.376 NotebookApp] Saving file at /Untitled.ipynb
+[I 14:58:41.315 NotebookApp] Saving file at /Untitled.ipynb
+[W 15:13:12.397 NotebookApp] WebSocket ping timeout after 119969 ms.
+[I 15:13:17.400 NotebookApp] Starting buffering for 0bc251aa-a997-414e-bdf1-2ce9750636ae:8e6f29fa828542479cf9728efc37756e
+[I 15:22:05.331 NotebookApp] Restoring connection for 0bc251aa-a997-414e-bdf1-2ce9750636ae:8e6f29fa828542479cf9728efc37756e
+[W 15:43:05.332 NotebookApp] WebSocket ping timeout after 119894 ms.
+[I 15:43:10.336 NotebookApp] Starting buffering for 0bc251aa-a997-414e-bdf1-2ce9750636ae:8e6f29fa828542479cf9728efc37756e
+slurmstepd: error: *** JOB 6994055 ON gpu07 CANCELLED AT 2022-06-02T21:30:18 DUE TO TIME LIMIT ***

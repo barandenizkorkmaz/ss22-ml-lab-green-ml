@@ -1,0 +1,90 @@
+Starting job 6994370
+SLURM assigned me the node(s): gpu07
+[W 10:40:04.931 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
+[I 10:40:04.934 NotebookApp] The port 8888 is already in use, trying another port.
+[I 10:40:04.935 NotebookApp] Serving notebooks from local directory: /nfs/homedirs/kempern/green-ml-daml/src
+[I 10:40:04.935 NotebookApp] Jupyter Notebook 6.4.11 is running at:
+[I 10:40:04.935 NotebookApp] http://gpu07:8889/?token=675a522ea4979676da9527b71b5939d4c4dcbcfab8b8b5a0
+[I 10:40:04.935 NotebookApp]  or http://127.0.0.1:8889/?token=675a522ea4979676da9527b71b5939d4c4dcbcfab8b8b5a0
+[I 10:40:04.935 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 10:40:04.951 NotebookApp] 
+    
+    To access the notebook, open this file in a browser:
+        file:///nfs/homedirs/kempern/.local/share/jupyter/runtime/nbserver-1463134-open.html
+    Or copy and paste one of these URLs:
+        http://gpu07:8889/?token=675a522ea4979676da9527b71b5939d4c4dcbcfab8b8b5a0
+     or http://127.0.0.1:8889/?token=675a522ea4979676da9527b71b5939d4c4dcbcfab8b8b5a0
+[I 10:40:20.580 NotebookApp] 302 GET /?token=675a522ea4979676da9527b71b5939d4c4dcbcfab8b8b5a0 (172.24.220.30) 0.860000ms
+[I 10:40:31.092 NotebookApp] Creating new notebook in /notebooks
+[I 10:40:35.978 NotebookApp] Kernel started: e78e8eda-62b9-4b09-9980-34f4bfa22b02, name: python3
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 95134b52-da4c-4c4a-aa42-acc5ec6516de
+[I 10:42:36.157 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+2022-06-03 11:00:26.080776: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory
+2022-06-03 11:00:26.080811: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+[I 11:00:36.063 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:02:36.873 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:04:36.031 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+2022-06-03 11:04:50.494074: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory
+2022-06-03 11:04:50.494200: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcublas.so.11'; dlerror: libcublas.so.11: cannot open shared object file: No such file or directory
+2022-06-03 11:04:50.494285: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcublasLt.so.11'; dlerror: libcublasLt.so.11: cannot open shared object file: No such file or directory
+2022-06-03 11:04:50.494371: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcufft.so.10'; dlerror: libcufft.so.10: cannot open shared object file: No such file or directory
+2022-06-03 11:04:50.494456: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcurand.so.10'; dlerror: libcurand.so.10: cannot open shared object file: No such file or directory
+2022-06-03 11:04:50.494537: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcusolver.so.11'; dlerror: libcusolver.so.11: cannot open shared object file: No such file or directory
+2022-06-03 11:04:50.494619: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcusparse.so.11'; dlerror: libcusparse.so.11: cannot open shared object file: No such file or directory
+2022-06-03 11:04:50.494702: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudnn.so.8'; dlerror: libcudnn.so.8: cannot open shared object file: No such file or directory
+2022-06-03 11:04:50.494718: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1850] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+2022-06-03 11:04:50.495701: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+[I 11:06:36.883 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:26:36.134 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:30:36.087 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:32:36.246 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:34:37.163 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:36:36.317 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:38:36.619 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:42:37.174 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:44:36.203 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:46:36.437 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:48:36.276 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 11:50:36.393 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 15:00:36.652 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 15:02:36.623 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 15:04:36.602 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 15:06:36.724 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 15:08:36.653 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 15:09:38.062 NotebookApp] Kernel interrupted: e78e8eda-62b9-4b09-9980-34f4bfa22b02
+[I 15:10:10.791 NotebookApp] Kernel interrupted: e78e8eda-62b9-4b09-9980-34f4bfa22b02
+[I 15:10:36.774 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 15:12:37.666 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[I 15:14:32.849 NotebookApp] Kernel interrupted: e78e8eda-62b9-4b09-9980-34f4bfa22b02
+[I 15:14:36.652 NotebookApp] Saving file at /notebooks/Untitled1.ipynb
+[W 15:14:56.820 NotebookApp] Notebook notebooks/Untitled.ipynb is not trusted
+[I 15:14:58.458 NotebookApp] Kernel started: 74dced82-dae1-4cf5-86c2-557756c85e78, name: python3
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 5affe7d9-71ac-4786-8aef-5db798f085a6
+2022-06-03 15:15:49.415188: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory
+2022-06-03 15:15:49.415249: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+[I 15:16:58.547 NotebookApp] Saving file at /notebooks/Untitled.ipynb
+[W 15:16:58.548 NotebookApp] Notebook notebooks/Untitled.ipynb is not trusted
+[I 15:18:59.498 NotebookApp] Saving file at /notebooks/Untitled.ipynb
+[W 15:18:59.499 NotebookApp] Notebook notebooks/Untitled.ipynb is not trusted
+2022-06-03 15:20:15.194306: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory
+2022-06-03 15:20:15.194815: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcublas.so.11'; dlerror: libcublas.so.11: cannot open shared object file: No such file or directory
+2022-06-03 15:20:15.195142: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcublasLt.so.11'; dlerror: libcublasLt.so.11: cannot open shared object file: No such file or directory
+2022-06-03 15:20:15.195466: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcufft.so.10'; dlerror: libcufft.so.10: cannot open shared object file: No such file or directory
+2022-06-03 15:20:15.195805: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcurand.so.10'; dlerror: libcurand.so.10: cannot open shared object file: No such file or directory
+2022-06-03 15:20:15.196161: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcusolver.so.11'; dlerror: libcusolver.so.11: cannot open shared object file: No such file or directory
+2022-06-03 15:20:15.196510: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcusparse.so.11'; dlerror: libcusparse.so.11: cannot open shared object file: No such file or directory
+2022-06-03 15:20:15.196882: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudnn.so.8'; dlerror: libcudnn.so.8: cannot open shared object file: No such file or directory
+2022-06-03 15:20:15.196898: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1850] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+2022-06-03 15:20:15.197349: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+[I 15:20:58.562 NotebookApp] Saving file at /notebooks/Untitled.ipynb
+[W 15:20:58.563 NotebookApp] Notebook notebooks/Untitled.ipynb is not trusted
+[I 15:28:59.598 NotebookApp] Saving file at /notebooks/Untitled.ipynb
+[W 15:28:59.599 NotebookApp] Notebook notebooks/Untitled.ipynb is not trusted
+[I 15:30:58.546 NotebookApp] Saving file at /notebooks/Untitled.ipynb
+[W 15:30:58.547 NotebookApp] Notebook notebooks/Untitled.ipynb is not trusted

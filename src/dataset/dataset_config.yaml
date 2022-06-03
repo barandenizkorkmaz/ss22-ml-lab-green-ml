@@ -10,27 +10,46 @@ slurm:
     gres: gpu:1       # num GPUs
     mem: 16G          # memory
     cpus-per-task: 4  # num cores
-    time: 0-00:20     # max time, D-HH:MM
+    time: 0-01:20     # max time, D-HH:MM
     partition: mllab
     qos: labcourse
 
+
 fixed:
-  number_forward_passes: 500
-  model_file: dataset.models.dense
+  layerwise: True
 
 grid:
   batch_size: 
     type: choice
     options:
       - 16
-      - 17
-      - 32
-      - 33
 
-  model_index:
-    type: range 
-    min: 1
-    max: 20
-    step: 1
+pretrained:
+  fixed: 
+    model_file: dataset.models.pretrained
+    number_forward_passes: 200
+
+  grid: 
+    model_index:
+      type: range 
+      min: 0
+      max: 40
+      step: 1
+  
+
+dense:
+
+  fixed: 
+    model_file: dataset.models.dense
+    number_forward_passes: 1000
+
+  grid: 
+    model_index:
+      type: range 
+      min: 2
+      max: 15
+      step: 1
+
+
 
 
