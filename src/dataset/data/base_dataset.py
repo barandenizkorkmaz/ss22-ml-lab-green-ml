@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 class Dataset(ABC):
-    def __int__(self, root_path):
+    def __init__(self, root_path):
         self.root_path = root_path
         self.x = None # np.ndarray
         self.y = None # np.ndarray
