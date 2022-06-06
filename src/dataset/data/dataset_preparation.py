@@ -1,4 +1,4 @@
-from base_dataset_preparation import DatasetPreparation
+from .base_dataset_preparation import DatasetPreparation
 
 import os
 import pandas as pd
@@ -82,6 +82,3 @@ class RegressorDatasetPreparation(DatasetPreparation):
                         f.write(json.dumps(x))
                     with open(f'{layer_path}/y.txt', 'w') as f:
                         f.write(json.dumps(y))
-
-regressorDataset = RegressorDatasetPreparation(path="/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/dataloader/dataset_layerwise.csv",
-                                               dataset_name="regressor_dataset")
