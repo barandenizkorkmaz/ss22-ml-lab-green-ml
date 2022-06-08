@@ -1,4 +1,4 @@
-from base_dataset import Dataset
+from .base_dataset import Dataset
 
 import tensorflow as tf
 import numpy as np
@@ -54,7 +54,7 @@ class LayerWiseDataset(Dataset):
                         y.append(power)
         return np.array(x, dtype=np.uint16), np.array(y, dtype=float)
 
-    def split(self, mode, validation_split_ratio, test_split_ratio, shuffle, seed):
+    def split(self, split_ratio, shuffle, seed):
         '''
 
         Args:
@@ -69,16 +69,8 @@ class LayerWiseDataset(Dataset):
                 x, y
 
         '''
-        x_train, x_test, y_train, y_test = train_test_split(self.x, self.y, test_size=test_split_ratio, random_state=seed, shuffle=shuffle)
-        x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=validation_split_ratio, random_state=None, shuffle=False)
-        if mode == "train":
-            return x_train, x_test
-        elif mode == "validation":
-            return x_val, y_val
-        elif mode == "test":
-            return x_test, y_test
-        else:
-            raise TypeError()
+        x_train, x_test, y_train, y_test = train_test_split(self.x, self.y, test_size=split_ratio, random_state=seed, shuffle=shuffle)
+        return x_train, x_test, y_train, y_test
 
 #TODO: Incomplete!
 class ModelWiseDataset(Dataset):
@@ -126,7 +118,7 @@ class ModelWiseDataset(Dataset):
             y.append(power)
         return np.array(x, dtype=np.uint16), np.array(y, dtype=float)
 
-    def split(self, mode, validation_split_ratio, test_split_ratio, shuffle, seed):
+    def split(self, split_ratio, shuffle, seed):
         '''
 
         Args:
@@ -141,13 +133,5 @@ class ModelWiseDataset(Dataset):
                 x, y
 
         '''
-        x_train, x_test, y_train, y_test = train_test_split(self.x, self.y, test_size=test_split_ratio, random_state=seed, shuffle=shuffle)
-        x_train, x_val, y_train, y_val = train_test_split(x_train, y_train, test_size=validation_split_ratio, random_state=None, shuffle=False)
-        if mode == "train":
-            return x_train, x_test
-        elif mode == "validation":
-            return x_val, y_val
-        elif mode == "test":
-            return x_test, y_test
-        else:
-            raise TypeError()
+        x_train, x_test, y_train, y_test = train_test_split(self.x, self.y, test_size=split_ratio, random_state=seed, shuffle=shuffle)
+        return x_train, x_test, y_train, y_test
