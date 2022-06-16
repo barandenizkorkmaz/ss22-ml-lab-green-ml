@@ -7,10 +7,9 @@ from sklearn.model_selection import train_test_split
 import ast
 
 class LayerWiseDataset(Dataset):
-    def __init__(self, path, target_layer):
+    def __init__(self, path):
         super().__init__(path)
         self.raw_data = self.load()
-        self.x, self.y = self.prepare(target_layer)
 
     def load(self):
         return pd.read_csv(self.path)
@@ -54,7 +53,7 @@ class LayerWiseDataset(Dataset):
                         y.append(power)
         return np.array(x, dtype=np.uint16), np.array(y, dtype=float)
 
-    def split(self, split_ratio, shuffle, seed):
+    def split(self, x, y, split_ratio, shuffle, seed):
         '''
 
         Args:
@@ -69,7 +68,7 @@ class LayerWiseDataset(Dataset):
                 x, y
 
         '''
-        x_train, x_test, y_train, y_test = train_test_split(self.x, self.y, test_size=split_ratio, random_state=seed, shuffle=shuffle)
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=split_ratio, random_state=seed, shuffle=shuffle)
         return x_train, x_test, y_train, y_test
 
 #TODO: Incomplete!
@@ -118,7 +117,7 @@ class ModelWiseDataset(Dataset):
             y.append(power)
         return np.array(x, dtype=np.uint16), np.array(y, dtype=float)
 
-    def split(self, split_ratio, shuffle, seed):
+    def split(self, x, y, split_ratio, shuffle, seed):
         '''
 
         Args:
@@ -133,5 +132,5 @@ class ModelWiseDataset(Dataset):
                 x, y
 
         '''
-        x_train, x_test, y_train, y_test = train_test_split(self.x, self.y, test_size=split_ratio, random_state=seed, shuffle=shuffle)
+        x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=split_ratio, random_state=seed, shuffle=shuffle)
         return x_train, x_test, y_train, y_test
