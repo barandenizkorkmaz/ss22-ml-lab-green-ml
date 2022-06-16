@@ -22,16 +22,16 @@ def config():
         ex.observers.append(seml.create_mongodb_observer(db_collection, overwrite=overwrite))
 
 @ex.automain
-def run(model_index: int, model_file: str, batch_size: int, number_forward_passes: int, layerwise: bool):
+def run(params, model_file: str, batch_size: int, number_forward_passes: int, layerwise: bool, on_GPU: bool):
     logging.info("Received following config:")
-    logging.info(f"Model: {model_index}, batch_size: {batch_size}, number_forward_passes: {number_forward_passes}")
+    logging.info(f"Model: {params}, batch_size: {batch_size}, number_forward_passes: {number_forward_passes}, on_GPU: {on_GPU}")
 
     #Not sure if this is a good solution
     models = importlib.import_module(model_file)
-    model, name = models.get_model(model_index)
+    model, name = models.get_model(params)
 
     logging.info(f"Evaluate energy for model {name}")
-    power = energyEvaluation.evaluate_energy_forward(model, model.input_shape, batch_size, number_forward_passes)
+    power = energyEvaluation.evaluate_energy_forward(model, model.input_shape, batch_size, number_forward_passes, on_GPU)
     logging.info(f"Measured power consumption of {power}kWh")
     result = {"name": name, "power": power, "model": model.to_json()}
     

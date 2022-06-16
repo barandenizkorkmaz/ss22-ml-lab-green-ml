@@ -1,0 +1,33 @@
+seml:
+  executable: dataset/experiment.py #TODO: change this
+  name: dataset_experiment
+  output_dir: dataset/logs
+  project_root_dir: ..
+
+slurm:
+  experiments_per_job: 1
+  sbatch_options:
+    gres: gpu:1       # num GPUs
+    mem: 16G          # memory
+    cpus-per-task: 4  # num cores
+    time: 0-01:20     # max time, D-HH:MM
+    partition: mllab
+    qos: labcourse
+    exclusive: ""
+
+
+fixed:
+  layerwise: True
+  batch_size: 16
+  model_file: dataset.models.dense
+  number_forward_passes: 100
+  model_index: 3
+
+grid:
+
+  on_GPU:
+    type: choice
+    options:
+      - True
+      - False
+

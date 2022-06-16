@@ -1,0 +1,25 @@
+Starting job 6994777
+SLURM assigned me the node(s): gpu08
+[W 23:10:25.209 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
+[I 23:10:25.213 NotebookApp] Serving notebooks from local directory: /nfs/homedirs/kempern/green-ml-daml
+[I 23:10:25.213 NotebookApp] Jupyter Notebook 6.4.11 is running at:
+[I 23:10:25.214 NotebookApp] http://gpu08:8888/?token=5e42371cbcc700e19bedf92ec669909eabbd4e0e1c4e34bd
+[I 23:10:25.214 NotebookApp]  or http://127.0.0.1:8888/?token=5e42371cbcc700e19bedf92ec669909eabbd4e0e1c4e34bd
+[I 23:10:25.214 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 23:10:25.228 NotebookApp] 
+    
+    To access the notebook, open this file in a browser:
+        file:///nfs/homedirs/kempern/.local/share/jupyter/runtime/nbserver-1355225-open.html
+    Or copy and paste one of these URLs:
+        http://gpu08:8888/?token=5e42371cbcc700e19bedf92ec669909eabbd4e0e1c4e34bd
+     or http://127.0.0.1:8888/?token=5e42371cbcc700e19bedf92ec669909eabbd4e0e1c4e34bd
+[I 23:10:42.327 NotebookApp] 302 GET /?token=5e42371cbcc700e19bedf92ec669909eabbd4e0e1c4e34bd (172.24.220.18) 1.030000ms
+[W 23:10:58.253 NotebookApp] Notebook src/notebooks/Untitled.ipynb is not trusted
+[I 23:10:59.691 NotebookApp] Kernel started: bec5df31-7a71-4ace-9db5-7b0827af2aee, name: python3
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: bf35ef55-31a5-4ee9-8505-a926884ee93f
+[I 23:13:00.489 NotebookApp] Saving file at /src/notebooks/Untitled.ipynb
+[W 23:13:00.491 NotebookApp] Notebook src/notebooks/Untitled.ipynb is not trusted
+[W 23:17:00.833 NotebookApp] WebSocket ping timeout after 119914 ms.
+[I 23:17:05.835 NotebookApp] Starting buffering for bec5df31-7a71-4ace-9db5-7b0827af2aee:1f88379df2bf41a9bea40cc0f9ef8c0d
+slurmstepd: error: *** JOB 6994777 ON gpu08 CANCELLED AT 2022-06-04T07:10:26 DUE TO TIME LIMIT ***

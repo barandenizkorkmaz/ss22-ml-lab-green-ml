@@ -1,8 +1,9 @@
 from codecarbon import EmissionsTracker
 import numpy as np
+import tensorflow as tf
 
-def evaluate_energy_forward(model, input_size, batch_size =1, repetitions = 1):
-    """ Measures the energy consumption of a forward pass of the given model
+def evaluate_energy_forward(model, input_size, batch_size =1, repetitions = 1, on_GPU = True):
+    """ Measures the energy consumption of a forward pass of the given model using uniformly random input 
 
     Parameters:
     -----------
@@ -14,28 +15,39 @@ def evaluate_energy_forward(model, input_size, batch_size =1, repetitions = 1):
             size of a batch for the forward pass (default 1)
         repetitions: int
             number of repetitions for the measurement
+        on_GPU: bool
+            bool indicating wheter the forward pass should be performed on GPU or CPU
         
     Returns:
     ----------
         float: measured average energy consumption of forward pass for the model
     """
+    tf.debugging.set_log_device_placement(True)
+    
     #Create random input:
+    def measurement():
+        if isinstance(input_size, list):
+            input = []
+            for s in input_size:
+                input.append(tf.random.uniform((batch_size, *s[1:])))
+        else:
+            input = tf.random.uniform((batch_size, *input_size[1:]))
+        
+        #Run repetitions forward passes and meassure the energy consumption
+        tracker = EmissionsTracker(save_to_file= False)
+        tracker.start()
+        for i in range(repetitions):
+            output = model(input)
+        
+        energy_consumption = tracker.stop()/repetitions
+        return energy_consumption
     
-    if isinstance(input_size, list):
-        input = []
-        for s in input_size:
-            input.append(np.random.rand(batch_size, *s[1:]))
+    if on_GPU:
+        with tf.device('/GPU:0'):
+            return measurement()
     else:
-        input = np.random.rand(batch_size, *input_size[1:])
-    
-    #Run repetitions forward passes and meassure the energy consumption
-    tracker = EmissionsTracker(save_to_file= False)
-    tracker.start()
-    for i in range(repetitions):
-        output = model(input)
-    
-    energy_consumption = tracker.stop()/repetitions
-    return energy_consumption
-    
+        with tf.device('/CPU:0'):
+            return measurement()
+
 
 

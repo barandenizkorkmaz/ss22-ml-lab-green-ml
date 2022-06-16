@@ -88,3 +88,6 @@ To enable them in other operations, rebuild TensorFlow with the appropriate comp
 [W 15:28:59.599 NotebookApp] Notebook notebooks/Untitled.ipynb is not trusted
 [I 15:30:58.546 NotebookApp] Saving file at /notebooks/Untitled.ipynb
 [W 15:30:58.547 NotebookApp] Notebook notebooks/Untitled.ipynb is not trusted
+[I 16:20:25.493 NotebookApp] Starting buffering for 74dced82-dae1-4cf5-86c2-557756c85e78:9a5a55d7d76a4be28d54f6204c6cde27
+[I 16:20:25.495 NotebookApp] Starting buffering for e78e8eda-62b9-4b09-9980-34f4bfa22b02:cf5866e88b224a46877047fba2cbd1ab
+slurmstepd: error: *** JOB 6994370 ON gpu07 CANCELLED AT 2022-06-03T18:40:23 DUE TO TIME LIMIT ***

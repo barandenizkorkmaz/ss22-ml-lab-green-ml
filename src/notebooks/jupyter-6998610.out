@@ -1,0 +1,72 @@
+Starting job 6998610
+SLURM assigned me the node(s): gpu07
+[W 10:10:11.155 NotebookApp] WARNING: The notebook server is listening on all IP addresses and not using encryption. This is not recommended.
+[I 10:10:11.159 NotebookApp] The port 8888 is already in use, trying another port.
+[I 10:10:11.159 NotebookApp] The port 8889 is already in use, trying another port.
+[I 10:10:11.160 NotebookApp] Serving notebooks from local directory: /nfs/homedirs/kempern/green-ml-daml/src/notebooks
+[I 10:10:11.160 NotebookApp] Jupyter Notebook 6.4.11 is running at:
+[I 10:10:11.160 NotebookApp] http://gpu07:8890/?token=56118e8cc7a071a0696a49ab2eb716984e3e029ff2f0e41e
+[I 10:10:11.160 NotebookApp]  or http://127.0.0.1:8890/?token=56118e8cc7a071a0696a49ab2eb716984e3e029ff2f0e41e
+[I 10:10:11.160 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[C 10:10:11.177 NotebookApp] 
+    
+    To access the notebook, open this file in a browser:
+        file:///nfs/homedirs/kempern/.local/share/jupyter/runtime/nbserver-2198685-open.html
+    Or copy and paste one of these URLs:
+        http://gpu07:8890/?token=56118e8cc7a071a0696a49ab2eb716984e3e029ff2f0e41e
+     or http://127.0.0.1:8890/?token=56118e8cc7a071a0696a49ab2eb716984e3e029ff2f0e41e
+[I 10:10:58.932 NotebookApp] 302 GET /?token=56118e8cc7a071a0696a49ab2eb716984e3e029ff2f0e41e (172.24.220.22) 1.020000ms
+[W 10:11:11.421 NotebookApp] Notebook Untitled1.ipynb is not trusted
+[I 10:11:13.305 NotebookApp] Kernel started: a9cfd0f5-524b-4229-8cbc-6b7d8b6b7ad3, name: python3
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: bfbfa928-0fa9-42c9-8fb9-24deefa27fd4
+[I 10:11:26.805 NotebookApp] Starting buffering for a9cfd0f5-524b-4229-8cbc-6b7d8b6b7ad3:685ab4083e734c6d8709baa08b23bb80
+[W 10:11:32.774 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:11:34.837 NotebookApp] Kernel started: d3b8bce6-3f11-4821-831d-1878869a1cf0, name: python3
+[IPKernelApp] ERROR | No such comm target registered: jupyter.widget.control
+[IPKernelApp] WARNING | No such comm: 7b198008-102b-4df8-95ce-61d23d1110be
+2022-06-13 10:12:28.086398: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory
+2022-06-13 10:12:28.086464: I tensorflow/stream_executor/cuda/cudart_stub.cc:29] Ignore above cudart dlerror if you do not have a GPU set up on your machine.
+2022-06-13 10:12:36.040099: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudart.so.11.0'; dlerror: libcudart.so.11.0: cannot open shared object file: No such file or directory
+2022-06-13 10:12:36.041110: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcublas.so.11'; dlerror: libcublas.so.11: cannot open shared object file: No such file or directory
+2022-06-13 10:12:36.042195: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcublasLt.so.11'; dlerror: libcublasLt.so.11: cannot open shared object file: No such file or directory
+2022-06-13 10:12:36.043188: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcufft.so.10'; dlerror: libcufft.so.10: cannot open shared object file: No such file or directory
+2022-06-13 10:12:36.043987: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcurand.so.10'; dlerror: libcurand.so.10: cannot open shared object file: No such file or directory
+2022-06-13 10:12:36.044850: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcusolver.so.11'; dlerror: libcusolver.so.11: cannot open shared object file: No such file or directory
+2022-06-13 10:12:36.045534: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcusparse.so.11'; dlerror: libcusparse.so.11: cannot open shared object file: No such file or directory
+2022-06-13 10:12:36.046437: W tensorflow/stream_executor/platform/default/dso_loader.cc:64] Could not load dynamic library 'libcudnn.so.8'; dlerror: libcudnn.so.8: cannot open shared object file: No such file or directory
+2022-06-13 10:12:36.046465: W tensorflow/core/common_runtime/gpu/gpu_device.cc:1850] Cannot dlopen some GPU libraries. Please make sure the missing libraries mentioned above are installed properly if you would like to use GPU. Follow the guide at https://www.tensorflow.org/install/gpu for how to download and setup the required libraries for your platform.
+Skipping registering GPU devices...
+2022-06-13 10:12:36.047723: I tensorflow/core/platform/cpu_feature_guard.cc:193] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+[I 10:13:35.161 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:13:35.162 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:15:34.891 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:15:34.892 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:17:34.895 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:17:34.896 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:27:34.942 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:27:34.942 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:29:34.919 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:29:34.920 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:31:34.963 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:31:34.964 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:33:34.940 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:33:34.941 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:35:34.937 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:35:34.938 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:37:35.929 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:37:35.930 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:39:34.954 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:39:34.956 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:41:34.963 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:41:34.964 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:43:34.956 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:43:34.957 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:45:34.956 NotebookApp] Saving file at /Untitled.ipynb
+[W 10:45:34.957 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 10:56:34.868 NotebookApp] Starting buffering for d3b8bce6-3f11-4821-831d-1878869a1cf0:4d84a4a18ae24f688d3f73523b61cb14
+[W 12:02:43.094 NotebookApp] Notebook Untitled.ipynb is not trusted
+[I 12:05:01.727 NotebookApp] Saving file at /Untitled.ipynb
+[W 12:05:01.728 NotebookApp] Notebook Untitled.ipynb is not trusted
+slurmstepd: error: *** JOB 6998610 ON gpu07 CANCELLED AT 2022-06-13T18:10:17 DUE TO TIME LIMIT ***

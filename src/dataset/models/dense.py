@@ -8,6 +8,6 @@ def fully_connected(number_layers, hidden_size):
     model.build((None,hidden_size))
     return model
 
-def get_model(number_layers: int):
-    model = fully_connected(number_layers, 20)
-    return model, f"Dense {number_layers}-layers"
+def get_model(params):
+    model = fully_connected(params["number_layers"], params["hidden_size"])
+    return model, f"Dense {params['number_layers']}-layers with hidden size of {params['hidden_size']}"
