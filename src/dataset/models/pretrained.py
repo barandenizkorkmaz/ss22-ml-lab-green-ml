@@ -43,6 +43,6 @@ models = [
     ('Xception', Xception(weights=None))
 ]
 
-def get_model(model_index:int):
-    model_name, model = models[model_index]
+def get_model(params):
+    model_name, model = models[params['model_index']]
     return model, model_name
