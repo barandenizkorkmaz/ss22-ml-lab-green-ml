@@ -1114,3 +1114,258 @@ SLURM assigned me the node(s): gpu07
 [W 16:22:40.029 NotebookApp] Forbidden
 [W 16:22:40.029 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.120000ms referer=None
 [W 16:22:40.038 NotebookApp] 401 POST /login (172.24.64.22) 2.100000ms referer=None
+[W 16:23:10.029 NotebookApp] Forbidden
+[W 16:23:10.029 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 16:23:10.039 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:23:40.029 NotebookApp] Forbidden
+[W 16:23:40.030 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:23:40.039 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:24:10.030 NotebookApp] Forbidden
+[W 16:24:10.030 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:24:10.040 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:24:40.030 NotebookApp] Forbidden
+[W 16:24:40.031 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 16:24:40.040 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:25:10.030 NotebookApp] Forbidden
+[W 16:25:10.030 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:25:10.039 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:25:40.030 NotebookApp] Forbidden
+[W 16:25:40.031 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:25:40.040 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:26:10.031 NotebookApp] Forbidden
+[W 16:26:10.031 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:26:10.041 NotebookApp] 401 POST /login (172.24.64.22) 1.880000ms referer=None
+[W 16:26:40.031 NotebookApp] Forbidden
+[W 16:26:40.031 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 16:26:40.039 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:27:10.033 NotebookApp] Forbidden
+[W 16:27:10.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 16:27:10.043 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:27:40.031 NotebookApp] Forbidden
+[W 16:27:40.032 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:27:40.040 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:28:10.031 NotebookApp] Forbidden
+[W 16:28:10.032 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.070000ms referer=None
+[W 16:28:10.041 NotebookApp] 401 POST /login (172.24.64.22) 3.290000ms referer=None
+[W 16:28:40.031 NotebookApp] Forbidden
+[W 16:28:40.032 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 16:28:40.041 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:29:10.032 NotebookApp] Forbidden
+[W 16:29:10.032 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:29:10.041 NotebookApp] 401 POST /login (172.24.64.22) 2.980000ms referer=None
+[W 16:29:40.032 NotebookApp] Forbidden
+[W 16:29:40.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.120000ms referer=None
+[W 16:29:40.042 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:30:10.032 NotebookApp] Forbidden
+[W 16:30:10.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.140000ms referer=None
+[W 16:30:10.042 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:30:40.032 NotebookApp] Forbidden
+[W 16:30:40.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.130000ms referer=None
+[W 16:30:40.042 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:31:10.032 NotebookApp] Forbidden
+[W 16:31:10.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 16:31:10.042 NotebookApp] 401 POST /login (172.24.64.22) 2.100000ms referer=None
+[W 16:31:40.033 NotebookApp] Forbidden
+[W 16:31:40.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.130000ms referer=None
+[W 16:31:40.042 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:32:10.033 NotebookApp] Forbidden
+[W 16:32:10.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 16:32:10.042 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:32:40.032 NotebookApp] Forbidden
+[W 16:32:40.032 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:32:40.041 NotebookApp] 401 POST /login (172.24.64.22) 2.750000ms referer=None
+[W 16:33:10.032 NotebookApp] Forbidden
+[W 16:33:10.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:33:10.041 NotebookApp] 401 POST /login (172.24.64.22) 2.110000ms referer=None
+[W 16:33:40.032 NotebookApp] Forbidden
+[W 16:33:40.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.130000ms referer=None
+[W 16:33:40.042 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:34:10.033 NotebookApp] Forbidden
+[W 16:34:10.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 16:34:10.042 NotebookApp] 401 POST /login (172.24.64.22) 2.100000ms referer=None
+[W 16:34:40.033 NotebookApp] Forbidden
+[W 16:34:40.033 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.120000ms referer=None
+[W 16:34:40.042 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:35:10.033 NotebookApp] Forbidden
+[W 16:35:10.034 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.380000ms referer=None
+[W 16:35:10.043 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:35:40.034 NotebookApp] Forbidden
+[W 16:35:40.034 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 16:35:40.043 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:36:10.034 NotebookApp] Forbidden
+[W 16:36:10.034 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:36:10.044 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:36:40.034 NotebookApp] Forbidden
+[W 16:36:40.034 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 16:36:40.043 NotebookApp] 401 POST /login (172.24.64.22) 2.070000ms referer=None
+[W 16:37:10.034 NotebookApp] Forbidden
+[W 16:37:10.034 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.070000ms referer=None
+[W 16:37:10.043 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:37:40.034 NotebookApp] Forbidden
+[W 16:37:40.035 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:37:40.044 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:38:10.034 NotebookApp] Forbidden
+[W 16:38:10.034 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:38:10.043 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:38:40.034 NotebookApp] Forbidden
+[W 16:38:40.035 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:38:40.044 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:39:10.034 NotebookApp] Forbidden
+[W 16:39:10.035 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:39:10.044 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:39:40.035 NotebookApp] Forbidden
+[W 16:39:40.035 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:39:40.044 NotebookApp] 401 POST /login (172.24.64.22) 2.070000ms referer=None
+[W 16:40:10.037 NotebookApp] Forbidden
+[W 16:40:10.037 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 16:40:10.047 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:40:40.035 NotebookApp] Forbidden
+[W 16:40:40.036 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:40:40.045 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:41:10.035 NotebookApp] Forbidden
+[W 16:41:10.036 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:41:10.045 NotebookApp] 401 POST /login (172.24.64.22) 3.220000ms referer=None
+[W 16:41:40.036 NotebookApp] Forbidden
+[W 16:41:40.036 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 16:41:40.045 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:42:10.036 NotebookApp] Forbidden
+[W 16:42:10.036 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:42:10.045 NotebookApp] 401 POST /login (172.24.64.22) 2.960000ms referer=None
+[W 16:42:40.036 NotebookApp] Forbidden
+[W 16:42:40.036 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:42:40.045 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:43:10.036 NotebookApp] Forbidden
+[W 16:43:10.037 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:43:10.046 NotebookApp] 401 POST /login (172.24.64.22) 2.110000ms referer=None
+[W 16:43:40.036 NotebookApp] Forbidden
+[W 16:43:40.037 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.120000ms referer=None
+[W 16:43:40.045 NotebookApp] 401 POST /login (172.24.64.22) 2.100000ms referer=None
+[W 16:44:10.036 NotebookApp] Forbidden
+[W 16:44:10.037 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 16:44:10.046 NotebookApp] 401 POST /login (172.24.64.22) 2.110000ms referer=None
+[W 16:44:40.037 NotebookApp] Forbidden
+[W 16:44:40.037 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.130000ms referer=None
+[W 16:44:40.046 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:45:10.037 NotebookApp] Forbidden
+[W 16:45:10.037 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 16:45:10.046 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:45:40.037 NotebookApp] Forbidden
+[W 16:45:40.037 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.130000ms referer=None
+[W 16:45:40.046 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:46:10.037 NotebookApp] Forbidden
+[W 16:46:10.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:46:10.047 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:46:40.037 NotebookApp] Forbidden
+[W 16:46:40.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:46:40.046 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:47:10.038 NotebookApp] Forbidden
+[W 16:47:10.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.070000ms referer=None
+[W 16:47:10.047 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:47:40.038 NotebookApp] Forbidden
+[W 16:47:40.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 16:47:40.047 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:48:10.037 NotebookApp] Forbidden
+[W 16:48:10.037 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 16:48:10.046 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:48:40.038 NotebookApp] Forbidden
+[W 16:48:40.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:48:40.047 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:49:10.037 NotebookApp] Forbidden
+[W 16:49:10.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:49:10.047 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:49:40.038 NotebookApp] Forbidden
+[W 16:49:40.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:49:40.047 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:50:10.038 NotebookApp] Forbidden
+[W 16:50:10.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:50:10.047 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:50:40.037 NotebookApp] Forbidden
+[W 16:50:40.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.120000ms referer=None
+[W 16:50:40.046 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 16:51:10.037 NotebookApp] Forbidden
+[W 16:51:10.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:51:10.047 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:51:40.038 NotebookApp] Forbidden
+[W 16:51:40.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:51:40.047 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:52:10.038 NotebookApp] Forbidden
+[W 16:52:10.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:52:10.047 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:52:40.038 NotebookApp] Forbidden
+[W 16:52:40.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 16:52:40.047 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:53:10.037 NotebookApp] Forbidden
+[W 16:53:10.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:53:10.047 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:53:40.038 NotebookApp] Forbidden
+[W 16:53:40.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:53:40.048 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:54:10.038 NotebookApp] Forbidden
+[W 16:54:10.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.070000ms referer=None
+[W 16:54:10.047 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:54:40.038 NotebookApp] Forbidden
+[W 16:54:40.038 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:54:40.047 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:55:10.039 NotebookApp] Forbidden
+[W 16:55:10.040 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:55:10.049 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:55:40.038 NotebookApp] Forbidden
+[W 16:55:40.039 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:55:40.047 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:56:10.039 NotebookApp] Forbidden
+[W 16:56:10.040 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:56:10.049 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:56:40.039 NotebookApp] Forbidden
+[W 16:56:40.039 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:56:40.048 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 16:57:10.039 NotebookApp] Forbidden
+[W 16:57:10.039 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:57:10.048 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:57:40.040 NotebookApp] Forbidden
+[W 16:57:40.040 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:57:40.049 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:58:10.039 NotebookApp] Forbidden
+[W 16:58:10.040 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 16:58:10.049 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 16:58:40.039 NotebookApp] Forbidden
+[W 16:58:40.040 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 16:58:40.049 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 16:59:10.040 NotebookApp] Forbidden
+[W 16:59:10.040 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 16:59:10.049 NotebookApp] 401 POST /login (172.24.64.22) 2.030000ms referer=None
+[W 16:59:40.040 NotebookApp] Forbidden
+[W 16:59:40.040 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 16:59:40.049 NotebookApp] 401 POST /login (172.24.64.22) 2.350000ms referer=None
+[W 17:00:10.040 NotebookApp] Forbidden
+[W 17:00:10.040 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.080000ms referer=None
+[W 17:00:10.049 NotebookApp] 401 POST /login (172.24.64.22) 2.080000ms referer=None
+[W 17:00:40.040 NotebookApp] Forbidden
+[W 17:00:40.041 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.120000ms referer=None
+[W 17:00:40.049 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 17:01:10.040 NotebookApp] Forbidden
+[W 17:01:10.041 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 17:01:10.049 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 17:01:40.041 NotebookApp] Forbidden
+[W 17:01:40.041 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 17:01:40.050 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 17:02:10.041 NotebookApp] Forbidden
+[W 17:02:10.041 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.110000ms referer=None
+[W 17:02:10.050 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 17:02:40.041 NotebookApp] Forbidden
+[W 17:02:40.042 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.130000ms referer=None
+[W 17:02:40.050 NotebookApp] 401 POST /login (172.24.64.22) 2.100000ms referer=None
+[W 17:03:10.041 NotebookApp] Forbidden
+[W 17:03:10.042 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.120000ms referer=None
+[W 17:03:10.051 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 17:03:40.041 NotebookApp] Forbidden
+[W 17:03:40.042 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 17:03:40.050 NotebookApp] 401 POST /login (172.24.64.22) 2.090000ms referer=None
+[W 17:04:10.042 NotebookApp] Forbidden
+[W 17:04:10.042 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.070000ms referer=None
+[W 17:04:10.052 NotebookApp] 401 POST /login (172.24.64.22) 2.060000ms referer=None
+[W 17:04:40.042 NotebookApp] Forbidden
+[W 17:04:40.042 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.100000ms referer=None
+[W 17:04:40.051 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None
+[W 17:05:10.042 NotebookApp] Forbidden
+[W 17:05:10.042 NotebookApp] 403 GET /api/sessions (172.24.64.22) 1.090000ms referer=None
+[W 17:05:10.052 NotebookApp] 401 POST /login (172.24.64.22) 2.050000ms referer=None

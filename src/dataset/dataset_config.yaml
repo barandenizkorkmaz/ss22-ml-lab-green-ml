@@ -10,45 +10,72 @@ slurm:
     gres: gpu:1       # num GPUs
     mem: 16G          # memory
     cpus-per-task: 4  # num cores
-    time: 0-01:20     # max time, D-HH:MM
+    time: 0-02:00     # max time, D-HH:MM
     partition: mllab
+    exclusive: "" #Not sure if this is going to work
     qos: labcourse
+    
 
 
 fixed:
   layerwise: True
+  on_GPU: True
 
 grid:
   batch_size: 
     type: choice
     options:
-      - 16
+      - 1
 
-pretrained:
+conv:
   fixed: 
-    model_file: dataset.models.pretrained
-    number_forward_passes: 200
+    model_file: dataset.models.conv
+    number_forward_passes: 10000
 
   grid: 
-    model_index:
-      type: range 
-      min: 0
-      max: 40
-      step: 1
+    params:
+      number_layers:
+        type: range 
+        min: 4
+        max: 40
+        step: 1 
+  
   
 
 dense:
 
   fixed: 
     model_file: dataset.models.dense
-    number_forward_passes: 1000
+    number_forward_passes: 10000
+
+  grid:
+    params:
+      number_layers:
+        type: range 
+        min: 2
+        max: 15
+        step: 3
+
+      hidden_size:
+        type: range 
+        min: 10
+        max: 51
+        step: 5
+
+pretrained:
+  fixed: 
+    model_file: dataset.models.pretrained
+    number_forward_passes: 10000
 
   grid: 
-    model_index:
-      type: range 
-      min: 2
-      max: 15
-      step: 1
+    params:
+      model_index:
+        type: range 
+        min: 0
+        max: 40
+        step: 1
+
+
 
 
 
