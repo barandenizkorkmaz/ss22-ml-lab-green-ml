@@ -23,7 +23,7 @@ def evaluate_energy_forward(model, input_size, batch_size =1, repetitions = 1, o
         float: measured average energy consumption of forward pass for the model
     """
     tf.debugging.set_log_device_placement(True)
-    
+
     #Create random input:
     def measurement():
         if isinstance(input_size, list):
@@ -33,6 +33,7 @@ def evaluate_energy_forward(model, input_size, batch_size =1, repetitions = 1, o
         else:
             input = tf.random.uniform((batch_size, *input_size[1:]))
         
+        #print(input.get_device()) #TODO: DELETE
         #Run repetitions forward passes and meassure the energy consumption
         tracker = EmissionsTracker(save_to_file= False)
         tracker.start()

@@ -43,6 +43,11 @@ def run(params, model_file: str, batch_size: int, number_forward_passes: int, la
         result["power_layerwise"]= power_layerwise
         logging.info(f"Evaluated layer-wise power: {power_layerwise}")
     
+    if model_file != "dataset.models.pretrained":
+        result["type"] = "simple"
+    else:
+        result["type"] = "pretrained"
+    
     return result
 
     
