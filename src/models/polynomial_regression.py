@@ -1,21 +1,19 @@
-from base_network import Network
+from .base_network import Network
 
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 from sklearn.metrics import mean_squared_error, mean_absolute_error
 
 class PolynomialRegressor(Network):
-    def __init__(self, x, y, degree):
+    def __init__(self, degree):
         super().__init__()
-        self.x = x
-        self.y = y
         self.degree = degree
         self.transformer = PolynomialFeatures(degree=degree)
         self.model = LinearRegression()
 
-    def train(self):
-        x_transformed = self.transformer.fit_transform(self.x)
-        self.model.fit(x_transformed, self.y)
+    def train(self, x_train, y_train, x_val, y_val):
+        x_transformed = self.transformer.fit_transform(x_train)
+        self.model.fit(x_transformed, y_train)
 
     def predict(self,x_test):
         x_test_transformed = self.transformer.fit_transform(x_test)

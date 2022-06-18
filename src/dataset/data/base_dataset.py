@@ -1,12 +1,12 @@
 from abc import ABC, abstractmethod
 
+import pandas as pd
 
 class Dataset(ABC):
-    def __init__(self, path):
-        self.path = path
-        self.raw_data = None
-        self.x = None
-        self.y = None
+    def __init__(self, file_path, subset):
+        self.file_path = file_path
+        self.subset = subset
+        self.load()
 
     @abstractmethod
     def load(self):
@@ -25,7 +25,14 @@ class Dataset(ABC):
         """
 
     @abstractmethod
-    def split(self, *args):
-        '''
-            Splits the dataset.
-        '''
+    def preprocessing(self, *args):
+        """
+            Preprocesses the dataset so that it can be fed for training and testing.
+
+            Args:
+                x, y
+
+            Returns:
+                x, y
+
+        """
