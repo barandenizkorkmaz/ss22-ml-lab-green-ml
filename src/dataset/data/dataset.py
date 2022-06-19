@@ -15,7 +15,7 @@ class LayerWiseDataset(Dataset):
         if self.subset == 'all':  # do nothing
             self.data = raw_data
         else:  # Options for subset are ['pretrained', 'simple'].
-            self.data = raw_data.loc[raw_data['subset'] == self.subset]
+            self.data = raw_data.loc[raw_data['result.type'] == self.subset]
 
     def prepare(self, target_layer):
         layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
