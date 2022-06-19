@@ -20,7 +20,7 @@ config = {
                 'values': {
                     'file_path': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/dataset_layerwise.csv',
                     'subset': 'all',
-                    'target_layer': 'dense'
+                    'target_layer': 'conv'
                 }
             },
             'ModelWiseDataset': {
@@ -41,7 +41,7 @@ config = {
             'polynomial_regression': {
                 'init_params': ['degree'],
                 'values':{
-                    'degree':3
+                    'degree':2
                 }
             }
         },
@@ -49,7 +49,7 @@ config = {
     'evaluation_params':{
         'evaluation_module': 'src.models.metrics',
         'losses': ['mae', 'mse', 'rmse', 'rmspe', 'r2'],
-        'my_losses': ['mse','rmse']
+        'my_losses': ['mse','rmse','rmspe','r2']
     }
 }
 
@@ -89,10 +89,12 @@ def main():
     # Evaluation
     evaluation_module = importlib.import_module(evaluation_params['evaluation_module'])
     my_losses = evaluation_params['my_losses']
-    loss = []
-    for cur_loss in my_losses:
-        func = getattr(evaluation_module, cur_loss)
-        loss.append(func(y_test, y_predicted))
+    loss_results = []
+    for loss in my_losses:
+        func = getattr(evaluation_module, loss)
+        loss_results.append(func(y_test, y_predicted))
+    print(my_losses)
+    print(loss_results)
 
 
 if __name__ == '__main__':

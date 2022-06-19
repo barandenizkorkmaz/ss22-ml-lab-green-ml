@@ -1,32 +1,18 @@
 import numpy as np
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
 
-def mse(act, pred):
-    act, pred = np.array(act), np.array(pred)
-    diff = pred - act
-    differences_squared = diff ** 2
-    mean_diff = differences_squared.mean()
-    return mean_diff
+def mse(y_true, y_pred):
+    return mean_squared_error(y_true, y_pred, squared=True)
 
-def rmse(act, pred):
-    act, pred = np.array(act), np.array(pred)
-    diff = pred - act
-    differences_squared = diff ** 2
-    mean_diff = differences_squared.mean()
-    rmse_val = np.sqrt(mean_diff)
-    return rmse_val
+def rmse(y_true, y_pred):
+    return mean_squared_error(y_true, y_pred, squared=False)
 
-def mae(act, pred):
-    act, pred = np.array(act), np.array(pred)
-    diff = pred - act
-    abs_diff = np.absolute(diff)
-    mean_diff = abs_diff.mean()
-    return mean_diff
+def mae(y_true, y_pred):
+    return mean_absolute_error(y_true, y_pred)
 
 def rmspe(y_true, y_pred):
-    '''
-    Compute Root Mean Square Percentage Error between two arrays.
-    '''
     eps = 1e-12
-    loss = np.sqrt(np.mean(np.square(((y_true - y_pred) / (y_true+eps))), axis=0))
+    return np.sqrt(np.mean(np.square(((y_true - y_pred) / (y_true+eps))), axis=0))
 
-    return loss
+def r2(y_true, y_pred):
+    return r2_score(y_true, y_pred)
