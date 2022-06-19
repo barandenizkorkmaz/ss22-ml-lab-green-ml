@@ -14,7 +14,7 @@ class SimpleRNN(Network):
         self.model.add(tf.keras.layers.LSTM(units, return_sequences=False))
         self.model.add(tf.keras.layers.Dense(hidden_dense, activation='relu'))
         self.model.add(tf.keras.layers.Dense(1, activation='relu'))
-        self.hist = None
+        self.history = None
 
     def train(self, x, y, loss, optimizer, epochs):
         if not self.ragged:
@@ -25,8 +25,8 @@ class SimpleRNN(Network):
             feat_size = x[0].shape[1]
         self.model.build(input_shape=(None, seq_len, feat_size)) # Should I replace None w/ num_models?
         self.model.compile(loss=loss, optimizer=optimizer)
-        self.hist = self.model.fit(x=x, y=y, epochs=epochs)
-        return self.hist
+        self.history = self.model.fit(x=x, y=y, epochs=epochs)
+        return self.history
 
     def predict(self, x):
         return self.model.predict(x)
@@ -44,12 +44,12 @@ class EmbeddedRNN(Network):
         self.x = tf.keras.layers.Dense(hidden_dense, activation='relu')(self.x)
         self.output = tf.keras.layers.Dense(1, activation='relu')(self.x)
         self.model = tf.keras.Model(self.input, self.output)
-        self.hist = None
+        self.history = None
 
     def train(self, x, y, loss, optimizer, epochs):
         self.model.compile(loss=loss, optimizer=optimizer)
-        self.hist = self.model.fit(x=x, y=y, epochs=epochs)
-        return self.hist
+        self.history = self.model.fit(x=x, y=y, epochs=epochs)
+        return self.history
 
     def predict(self, x):
         return self.model.predict(x)
@@ -66,14 +66,14 @@ class MLP(Network):
         self.model.add(tf.keras.layers.Dense(16, activation='relu'))
         self.model.add(tf.keras.layers.Dense(8, activation='elu'))
         self.model.add(tf.keras.layers.Dense(1, activation='relu'))
-        self.hist = None
+        self.history = None
 
     def train(self, x, y, loss, optimizer, epochs):
         a, b = x[0].shape
         self.model.build(input_shape=(None, a, b)) # Should I replace None w/ num_models?
         self.model.compile(loss=loss, optimizer=optimizer)
-        self.hist = self.model.fit(x=x, y=y, epochs=epochs)
-        return self.hist
+        self.history = self.model.fit(x=x, y=y, epochs=epochs)
+        return self.history
 
     def predict(self, x):
         return self.model.predict(x)
