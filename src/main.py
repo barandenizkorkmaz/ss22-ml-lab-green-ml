@@ -11,6 +11,7 @@
 import importlib
 import random
 import numpy as np
+import matplotlib.pyplot as plt
 
 config = {
     'dataset_params':{
@@ -20,7 +21,7 @@ config = {
                 'init_params': ['file_path', 'subset'],
                 'prepare_params': ['target_layer'],
                 'values': {
-                    'file_path': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv',
+                    'file_path': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv', # Needs to be set manually
                     'subset': 'simple',
                     'target_layer': 'dense'
                 }
@@ -29,21 +30,31 @@ config = {
                 'init_params': ['file_path', 'subset'],
                 'prepare_params': [],
                 'values': {
-                    'file_path': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/dataset_layerwise.csv',
+                    'file_path': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/dataset_layerwise.csv', # Needs to be set manually
                     'subset': 'all'
                 }
             }
         },
-        'validation_split':False,
-        'test_split': 0.3
+        'validation_split':0.2,
+        'test_split': 0.2
     },
     'model_params':{
-        'model_module': 'src.models.polynomial_regression',
+        'model_module': 'src.models.mlp_layerwise',
         'model_classes': {
             'polynomial_regression': {
                 'init_params': ['degree'],
                 'values':{
                     'degree':2
+                }
+            },
+            'mlp_layerwise':{
+                'init_params': ['batch_size', 'num_epochs', 'loss', 'lr', 'n_features'],
+                'values': {
+                    'batch_size': 16,
+                    'num_epochs': 1000,
+                    'loss': 'mse',
+                    'lr': 0.001,
+                    'n_features': 3 # Needs to be set inside the main. Please don't push your model-specific changes into the repository!
                 }
             }
         },
@@ -55,11 +66,11 @@ config = {
     }
 }
 
-dataset_class = 'LayerWiseDataset'
+dataset_class = 'LayerWiseDataset' # Needs to be set manually
 dataset_params = config['dataset_params']
 dataset_class_params = config['dataset_params']['dataset_classes'][dataset_class]
 
-model_class = 'polynomial_regression'
+model_class = 'mlp_layerwise' # Needs to be set manually
 model_params = config['model_params']
 model_class_params = config['model_params']['model_classes'][model_class]
 
@@ -69,8 +80,9 @@ evaluation_params = config['evaluation_params']
 def main():
     # Import the dataset and convert the csv file into numpy arrays (not preprocessed yet).
     dataset_module = importlib.import_module(dataset_params['dataset_module'])
-    dataset = dataset_module.LayerWiseDataset(*[dataset_class_params['values'][arg] for arg in dataset_class_params['init_params']])
+    dataset = dataset_module.LayerWiseDataset(*[dataset_class_params['values'][arg] for arg in dataset_class_params['init_params']]) # Needs to be changed manually
     x,y = dataset.prepare(*[dataset_class_params['values'][arg] for arg in dataset_class_params['prepare_params']])
+    print(f"x.shape: {x.shape}\ty.shape: {y.shape}")
 
     # Preprocess the dataset and split into the subsets of training/validation/test.
     x,y = dataset.preprocessing(x,y)
@@ -81,7 +93,7 @@ def main():
 
     # Create the model.
     model_module = importlib.import_module(model_params['model_module'])
-    model = model_module.PolynomialRegressor(*[model_class_params['values'][arg] for arg in model_class_params['init_params']])
+    model = model_module.MLPLW(*[model_class_params['values'][arg] for arg in model_class_params['init_params']]) # Needs to be changed manually
 
     # Overfitting.
     random_index = random.randint(0, len(y_train))
@@ -91,7 +103,9 @@ def main():
     print(f"Overfitting:\tTarget: {y_overfit.item()}\tPrediction: {y_predicted.item()}")
 
     # Train the model.
-    model.train(x_train=x_train, y_train=y_train, x_val=None, y_val=None)
+    if hasattr(model, 'history'): # Reset the history.
+        model.history = None
+    model.train(x_train=x_train, y_train=y_train, x_val=x_val, y_val=y_val)
 
     # Inference on the trained model
     y_predicted = model.predict(x_test=x_test)
@@ -105,6 +119,20 @@ def main():
         loss_results.append(func(y_test, y_predicted))
     print(my_losses)
     print(loss_results)
+
+    if hasattr(model, 'history'):
+        history = model.history
+        loss = history.history['loss']
+        val_loss = history.history['val_loss']
+        plt.figure(figsize=(8, 8))
+        plt.plot(loss, label='Training Loss')
+        plt.plot(val_loss, label='Validation Loss')
+        plt.legend(loc='upper right')
+        plt.ylabel(model_class_params['values']['loss'])
+        plt.ylim([0, max(max(loss),max(val_loss))])
+        plt.title('Training and Validation Loss')
+        plt.xlabel('epoch')
+        plt.show()
 
 
 if __name__ == '__main__':
