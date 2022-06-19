@@ -7,13 +7,13 @@ from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense
 
 class MLPLW(Network):
-    def __init__(self, batch_size, num_epochs, loss, lr, n_features):
+    def __init__(self, **kwargs):
         super().__init__()
-        self.batch_size = batch_size
-        self.num_epochs = num_epochs
-        self.loss = loss
-        self.lr = lr
-        self.n_features = n_features
+        self.batch_size = kwargs['batch_size']
+        self.num_epochs = kwargs['num_epochs']
+        self.loss = kwargs['loss']
+        self.lr = kwargs['lr']
+        self.n_features = kwargs['n_features']
         self.model = self.create_model()
 
     def create_model(self):

@@ -5,12 +5,15 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import ast
-from utils import indexify, one_hotify, flatten, convert_shapes
+from .utils import indexify, one_hotify, flatten, convert_shapes
 
 
 class LayerWiseDataset(Dataset):
-    def __init__(self, file_path, subset):
-        super().__init__(file_path, subset)
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.file_path = kwargs['file_path']
+        self.subset = kwargs['subset']
+        self.load()
 
     def load(self):
         raw_data = pd.read_csv(self.file_path)
@@ -19,7 +22,8 @@ class LayerWiseDataset(Dataset):
         else:  # Options for subset are ['pretrained', 'simple'].
             self.data = raw_data.loc[raw_data['result.type'] == self.subset]
 
-    def prepare(self, target_layer):
+    def prepare(self, **kwargs):
+        target_layer = kwargs['target_layer']
         layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
                      'DepthwiseConv2D', 'Multiply', 'ReLU', 'Flatten', 'MaxPooling2D', 'Add', 'Conv2D', 'Normalization',
                      'Reshape', 'SeparableConv2D', 'InputLayer', 'Concatenate', 'Dense', 'Activation', 'Rescaling'}

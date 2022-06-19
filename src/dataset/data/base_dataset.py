@@ -3,10 +3,12 @@ from abc import ABC, abstractmethod
 import pandas as pd
 
 class Dataset(ABC):
-    def __init__(self, file_path, subset):
-        self.file_path = file_path
-        self.subset = subset
-        self.load()
+    def __init__(self, *args, **kwargs):
+        """
+        Args:
+            *args:
+            **kwargs:
+        """
 
     @abstractmethod
     def load(self):
@@ -15,7 +17,7 @@ class Dataset(ABC):
         """
 
     @abstractmethod
-    def prepare(self,*args):
+    def prepare(self, *args, **kwargs):
         """
             Initializes self.x and self.y numpy arrays which will contain the dataset given in the root_path.
 
@@ -25,7 +27,7 @@ class Dataset(ABC):
         """
 
     @abstractmethod
-    def preprocessing(self, *args):
+    def preprocessing(self, *args, **kwargs):
         """
             Preprocesses the dataset so that it can be fed for training and testing.
 

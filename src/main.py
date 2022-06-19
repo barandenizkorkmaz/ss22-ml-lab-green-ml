@@ -18,20 +18,12 @@ config = {
         'dataset_module': 'src.dataset.data.dataset',
         'dataset_classes':{
             'LayerWiseDataset': {
-                'init_params': ['file_path', 'subset'],
-                'prepare_params': ['target_layer'],
-                'values': {
+                'init_params': {
                     'file_path': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv', # Needs to be set manually
-                    'subset': 'simple',
+                    'subset': 'simple'
+                },
+                'prepare_params': {
                     'target_layer': 'dense'
-                }
-            },
-            'ModelWiseDataset': {
-                'init_params': ['file_path', 'subset'],
-                'prepare_params': [],
-                'values': {
-                    'file_path': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/dataset_layerwise.csv', # Needs to be set manually
-                    'subset': 'all'
                 }
             }
         },
@@ -42,20 +34,18 @@ config = {
         'model_module': 'src.models.mlp_layerwise',
         'model_classes': {
             'polynomial_regression': {
-                'init_params': ['degree'],
-                'values':{
+                'init_params': {
                     'degree':2
                 }
             },
             'mlp_layerwise':{
-                'init_params': ['batch_size', 'num_epochs', 'loss', 'lr', 'n_features'],
-                'values': {
+                'init_params': {
                     'batch_size': 16,
-                    'num_epochs': 1000,
-                    'loss': 'mse',
+                    'num_epochs': 100,
+                    'loss': 'mse', # init_params must always include loss!
                     'lr': 0.001,
                     'n_features': 3 # Needs to be set inside the main. Please don't push your model-specific changes into the repository!
-                }
+                },
             }
         },
     },
@@ -80,8 +70,9 @@ evaluation_params = config['evaluation_params']
 def main():
     # Import the dataset and convert the csv file into numpy arrays (not preprocessed yet).
     dataset_module = importlib.import_module(dataset_params['dataset_module'])
-    dataset = dataset_module.LayerWiseDataset(*[dataset_class_params['values'][arg] for arg in dataset_class_params['init_params']]) # Needs to be changed manually
-    x,y = dataset.prepare(*[dataset_class_params['values'][arg] for arg in dataset_class_params['prepare_params']])
+    print("Arg:",dataset_class_params['init_params'])
+    dataset = dataset_module.LayerWiseDataset(**dataset_class_params['init_params']) # Needs to be changed manually
+    x,y = dataset.prepare(**dataset_class_params['prepare_params'])
     print(f"x.shape: {x.shape}\ty.shape: {y.shape}")
 
     # Preprocess the dataset and split into the subsets of training/validation/test.
@@ -93,7 +84,7 @@ def main():
 
     # Create the model.
     model_module = importlib.import_module(model_params['model_module'])
-    model = model_module.MLPLW(*[model_class_params['values'][arg] for arg in model_class_params['init_params']]) # Needs to be changed manually
+    model = model_module.MLPLW(**model_class_params['init_params']) # Needs to be changed manually
 
     # Overfitting.
     random_index = random.randint(0, len(y_train))
@@ -102,9 +93,9 @@ def main():
     y_predicted = model.predict(x_overfit)
     print(f"Overfitting:\tTarget: {y_overfit.item()}\tPrediction: {y_predicted.item()}")
 
-    # Train the model.
-    if hasattr(model, 'history'): # Reset the history.
-        model.history = None
+    # Create the model again and train.
+    model_module = importlib.import_module(model_params['model_module'])
+    model = model_module.MLPLW(**model_class_params['init_params']) # Needs to be changed manually
     model.train(x_train=x_train, y_train=y_train, x_val=x_val, y_val=y_val)
 
     # Inference on the trained model
@@ -128,7 +119,7 @@ def main():
         plt.plot(loss, label='Training Loss')
         plt.plot(val_loss, label='Validation Loss')
         plt.legend(loc='upper right')
-        plt.ylabel(model_class_params['values']['loss'])
+        plt.ylabel(model_class_params['init_params']['loss'])
         plt.ylim([0, max(max(loss),max(val_loss))])
         plt.title('Training and Validation Loss')
         plt.xlabel('epoch')
