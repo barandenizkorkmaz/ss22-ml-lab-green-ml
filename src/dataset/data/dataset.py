@@ -87,12 +87,13 @@ def split(x, y, split_ratio, shuffle, seed):
 
 
 class ModelWiseDataset(Dataset):
-    def __init__(self, file_path, subset, include_features=False, one_hot=True):
-        super(ModelWiseDataset, self).__init__(file_path, subset)
-        self.subset = subset
-        self.file_path = file_path
-        self.one_hot = one_hot
-        self.include_features = include_features
+    def __init__(self, **kwargs):
+        super(ModelWiseDataset, self).__init__(kwargs['file_path'], kwargs['subset'])
+        self.subset = kwargs['subset']
+        self.file_path = kwargs['file_path']
+        self.one_hot = kwargs['one_hot']
+        self.include_features = kwargs['include_features']
+        self.load()
         self.num_ops = None
 
     def load(self):
@@ -103,7 +104,7 @@ class ModelWiseDataset(Dataset):
             self.data = raw_data.loc[raw_data['subset'] == self.subset]
 
 
-    def prepare(self):
+    def prepare(self, **kwargs):
         dense_features = ["input_shape","output_shape","units"]
         conv_features = ["input_shape","output_shape","filters", "kernel_size", "stride"]
         pool_features = ["input_shape","output_shape","filters (default=1)", "pool_size", "stride"]
@@ -165,13 +166,13 @@ class ModelWiseDataset(Dataset):
 
                 x.append(model_x)
                 y.append(power)
-
         x, y = self.preprocessing(x, y)
         return np.array(x, dtype=np.uint16), np.array(y, dtype=float)
 
     def preprocessing(self, x, y):
         y = np.abs(y)
         y = (y - np.min(y)) / (np.max(y) - np.min(y))
+
         if self.one_hot:
             x = one_hotify(x)
         else:
@@ -179,5 +180,7 @@ class ModelWiseDataset(Dataset):
             self.num_ops = num_ops
         x = convert_shapes(x)
         x = flatten(x)
+
         x = tf.keras.preprocessing.sequence.pad_sequences(x, padding='post')
+
         return x, y
