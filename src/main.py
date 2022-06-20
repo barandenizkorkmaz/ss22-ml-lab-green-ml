@@ -99,7 +99,7 @@ def main():
     model.train(x_train=x_train, y_train=y_train, x_val=x_val, y_val=y_val)
 
     # Inference on the trained model
-    y_predicted = model.predict(x_test=x_test)
+    y_predicted = model.predict(x_test=x_test).flatten()
 
     # Evaluation
     evaluation_module = importlib.import_module(evaluation_params['evaluation_module'])
