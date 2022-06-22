@@ -14,6 +14,7 @@ class MLPLW(Network):
         self.loss = kwargs['loss']
         self.lr = kwargs['lr']
         self.n_features = kwargs['n_features']
+        self.num_epochs_overfit = kwargs['num_epochs_overfit']
         self.model = self.create_model()
 
     def create_model(self):
@@ -28,12 +29,13 @@ class MLPLW(Network):
         return model
 
     def train(self, x_train, y_train, x_val, y_val):
+        num_epochs = self.num_epochs if len(x_train) != 1 else self.num_epochs_overfit
         if x_val is not None and y_val is not None:
             self.history = self.model.fit(
                 x_train,
                 y_train,
                 batch_size=self.batch_size,
-                epochs=self.num_epochs,
+                epochs=num_epochs,
                 validation_data=(x_val, y_val)
             )
         else:
@@ -41,9 +43,12 @@ class MLPLW(Network):
                 x_train,
                 y_train,
                 batch_size=self.batch_size,
-                epochs=self.num_epochs,
+                epochs=num_epochs,
                 validation_data=None
             )
 
     def predict(self,x_test):
         return self.model.predict(x_test)
+
+    def to_json(self):
+        return self.model.to_json()

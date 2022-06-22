@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import ast
-from .utils import indexify, one_hotify, flatten, convert_shapes
+from .utils import indexify, one_hotify, flatten, convert_shapes, extract_layer_info, pad_to_dense, get_layer_type
 
 
 class LayerWiseDataset(Dataset):
@@ -27,44 +27,47 @@ class LayerWiseDataset(Dataset):
         layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
                      'DepthwiseConv2D', 'Multiply', 'ReLU', 'Flatten', 'MaxPooling2D', 'Add', 'Conv2D', 'Normalization',
                      'Reshape', 'SeparableConv2D', 'InputLayer', 'Concatenate', 'Dense', 'Activation', 'Rescaling'}
-        dense_features = ["input_shape","output_shape","units"]
-        conv_features = ["input_shape","output_shape","filters", "kernel_size", "stride"]
-        pool_features = ["input_shape","output_shape","filters (default=1)", "pool_size", "stride"]
+        dense_features = ["input_shape","output_shape","hidden_size", "num_flops"]
+        conv_features = ["input_shape","output_shape","filters", "kernel_size", "stride", "num_flops"]
+        pool_features = ["input_shape","output_shape","filters (default=1)", "pool_size", "stride", "num_flops"]
         # TODO: The power of kernel/pool size can be taken wrt the dim (2d/3d).
         x = []
         y = []
+        layer_types_to_indices = {
+            'dense': [],
+            'conv': [],
+            'pool': []
+        }
         for model_index, row in self.data.iterrows():
             model = tf.keras.models.model_from_json(row['result.model'])
             power_layerwise = ast.literal_eval(row["result.power_layerwise"])
             for layer, power in zip(model.layers, power_layerwise):
-                if target_layer in layer.__class__.__name__.lower():
-                    SUCCESS = False
-                    layer_config = layer.get_config()
-                    if "dense" in target_layer:
-                        x.append([*[dim for dim in layer.input_shape if dim!=None], *[dim for dim in layer.output_shape if dim!=None], layer_config["units"]])
-                        SUCCESS = True
-                    elif "conv" in target_layer:
-                        try:
-                            x.append([*[dim for dim in layer.input_shape if dim!=None], *[dim for dim in layer.output_shape if dim!=None], layer_config["filters"], layer_config["kernel_size"][0], layer_config["strides"][0]])
-                            SUCCESS = True
-                        except: # Possibly depth-wise conv
-                            x.append([*[dim for dim in layer.input_shape if dim!=None], *[dim for dim in layer.output_shape if dim!=None], layer.output_shape[-1], layer_config["kernel_size"][0], layer_config["strides"][0]])
-                            SUCCESS = True
-                    elif "pool" in target_layer:
-                        try:
-                            x.append([*[dim for dim in layer.input_shape if dim != None],
-                                      *[dim for dim in layer.output_shape if dim != None], 1,
-                                      layer_config["pool_size"][0], layer_config["strides"][0]])
-                            SUCCESS = True
-                        except: # Ignore
-                            pass
-                    if SUCCESS:
+                if target_layer == "all":
+                    layer_info = extract_layer_info(layer)
+                    if layer_info != False:
+                        x.append(layer_info)
                         y.append(power)
+                        layer_type = get_layer_type(layer)
+                        if layer_type in layer_types_to_indices:
+                            layer_types_to_indices[layer_type].append(len(layer_types_to_indices[layer_type]))
+                    continue
+                elif target_layer in layer.__class__.__name__.lower():
+                    layer_info = extract_layer_info(layer)
+                    if layer_info != False:
+                        x.append(layer_info)
+                        y.append(power)
+                        layer_type = get_layer_type(layer)
+                        if layer_type in layer_types_to_indices:
+                            layer_types_to_indices[layer_type].append(len(layer_types_to_indices[layer_type]))
+                    continue
+        x = pad_to_dense(x)
+        self.layer_types_to_indices = layer_types_to_indices
         return np.array(x, dtype=np.uint16), np.array(y, dtype=float)
 
     def preprocessing(self, x, y):
-        y = np.abs(y)  # Take abs due to issues with CodeCarbon
-        y = (y - np.min(y)) / (np.max(y) - np.min(y))  # Normalize
+        y = y * 1e9
+        #y = np.abs(y)  # Take abs due to issues with CodeCarbon
+        #y = (y - np.min(y)) / (np.max(y) - np.min(y))  # Normalize
         return x, y
 
 def split(x, y, split_ratio, shuffle, seed):

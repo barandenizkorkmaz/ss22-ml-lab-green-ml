@@ -3,7 +3,7 @@ from .base_network import Network
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 
-class PolynomialRegressor(Network):
+class PolynomialRegression(Network):
     def __init__(self, degree):
         super().__init__()
         self.degree = degree

@@ -1,3 +1,9 @@
+import tensorflow as tf
+from tensorflow import keras
+from tensorflow.keras import layers
+import numpy as np
+
+from src.dataset.experiments.flopEvaluation import get_flops
 
 def map_to_ints(x):
     """
@@ -91,6 +97,75 @@ def flatten(dataset):
             mod_int.append([layer[i][j] for i in range(len(layer)) for j in range(len(layer[i]))])
         flattened.append(mod_int)
     return flattened
+
+def extract_layer_info(layer):
+    current_layer_type = layer.__class__.__name__.lower()
+    layer_config = layer.get_config()
+    if "dense" in current_layer_type:
+        input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
+        output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
+        hidden_size = layer_config["units"]
+        num_flops = get_flops(model_from_layer(layer))
+        return [input_size, output_size, hidden_size, num_flops]
+    elif "conv" in current_layer_type:
+        input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
+        output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
+        try:
+            num_filters = layer_config["filters"]
+        except:  # Possibly depth-wise conv
+            num_filters = layer.output_shape[-1]
+        kernel_size = np.prod([*[dim for dim in layer_config["kernel_size"] if dim != None]])
+        stride = layer_config["strides"][0]
+        num_flops = get_flops(model_from_layer(layer))
+        return [input_size, output_size, num_filters, kernel_size, stride, num_flops]
+    elif "pool" in current_layer_type:
+        try:
+            input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
+            output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
+            num_filters = 1
+            pool_size = np.prod([*[dim for dim in layer_config["pool_size"] if dim != None]])
+            stride = layer_config["strides"][0]
+            num_flops = get_flops(model_from_layer(layer))
+            return [input_size, output_size, num_filters, pool_size, stride, num_flops]
+        except:  # Ignore
+            return False
+    return False
+
+def pad_to_dense(M):
+    """Appends the minimal required amount of zeroes at the end of each
+     array in the jagged array `M`, such that `M` looses its jagedness."""
+
+    maxlen = max(len(r) for r in M)
+
+    Z = np.zeros((len(M), maxlen))
+    for enu, row in enumerate(M):
+        Z[enu, :len(row)] += row
+    return Z
+
+def get_layer_type(layer):
+    '''
+    Returns the type of layer from the layer object
+    Args:
+        layer: layer object
+
+    Returns: str
+
+    '''
+    if "dense" in layer.__class__.__name__.lower():
+        return "dense"
+    elif "conv" in layer.__class__.__name__.lower():
+        return "conv"
+    elif "pool" in layer.__class__.__name__.lower():
+        return "pool"
+    return ""
+
+
+def model_from_layer(layer):
+    input_shape = layer.input_shape
+    model = tf.keras.Sequential()
+    model.add(layer)
+    model.build(input_shape=input_shape)
+    return model
 
 
 
