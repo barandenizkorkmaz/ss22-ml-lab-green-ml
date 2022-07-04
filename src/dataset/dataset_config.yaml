@@ -37,7 +37,7 @@ pretrained:
       model_index:
         type: range 
         min: 0
-        max: 40
+        max: 23
         step: 1
 
       input_size:
