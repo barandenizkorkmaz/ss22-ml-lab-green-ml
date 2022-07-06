@@ -38,8 +38,14 @@ def run(params, model_file: str, batch_size: int, number_forward_passes: int, la
     if layerwise:
         logging.info("Evaluating layer-wise power")
         power_layerwise = []
-        for layer in model.layers:
-            power_layerwise.append(energyEvaluation.evaluate_energy_forward(layer, layer.input_shape, batch_size, number_forward_passes))
+        for i, layer in enumerate(model.layers):
+            logging.info(f"Evaluating layer-wise power for layer {i+1}/{len(model.layers)} of the overall model")
+            if i == 0:
+                for j, sublayer in enumerate(layer.layers):
+                    logging.info(f"Evaluating layer-wise power for layer {j+1}/{len(layer.layers)} of the base model")
+                    power_layerwise.append(energyEvaluation.evaluate_energy_forward(sublayer, sublayer.input_shape, batch_size, number_forward_passes))
+            else:
+                power_layerwise.append(energyEvaluation.evaluate_energy_forward(layer, layer.input_shape, batch_size, number_forward_passes))
         result["power_layerwise"]= power_layerwise
         logging.info(f"Evaluated layer-wise power: {power_layerwise}")
     

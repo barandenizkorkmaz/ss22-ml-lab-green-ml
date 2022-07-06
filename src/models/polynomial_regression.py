@@ -4,10 +4,10 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 
 class PolynomialRegression(Network):
-    def __init__(self, degree):
+    def __init__(self, *args, **kwargs):
         super().__init__()
-        self.degree = degree
-        self.transformer = PolynomialFeatures(degree=degree)
+        self.degree = kwargs['degree']
+        self.transformer = PolynomialFeatures(degree=self.degree)
         self.model = LinearRegression()
 
     def train(self, x_train, y_train, x_val, y_val):

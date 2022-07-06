@@ -1,0 +1,39 @@
+dataset:
+  module: src.dataset.data.dataset
+  class: LayerWiseDataset
+  params:
+    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv # Needs to be set manually
+    subset: pretrained
+    target_layer: conv
+    is_model_wise: False
+    validation_split: False
+    test_split: 0.2
+
+model_class: polynomial_regression # Needs to be set manually
+
+polynomial_regression:
+  module: src.models.polynomial_regression
+  class: PolynomialRegression
+  params:
+    degree: 3
+
+mlp_layerwise:
+  module: src.models.mlp_layerwise
+  class: mlp_layerwise
+  params:
+    batch_size: 64,
+    num_epochs: 5000,
+    loss: mse, # init_params must include loss!
+    lr: 0.0001,
+    n_features: 5, # Can be set inside the main or given as hard-coded.
+    num_epochs_overfit: 3000,
+    activation: relu
+
+evaluation:
+  module: src.models.metrics
+  metrics:
+    - mae
+    - mse
+    - rmse
+    - rmspe
+    - r2

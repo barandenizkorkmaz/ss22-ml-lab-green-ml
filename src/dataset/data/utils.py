@@ -98,15 +98,15 @@ def flatten(dataset):
         flattened.append(mod_int)
     return flattened
 
-def extract_layer_info(layer):
+def extract_layer_features(layer):
     current_layer_type = layer.__class__.__name__.lower()
     layer_config = layer.get_config()
     if "dense" in current_layer_type:
         input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
         output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
         hidden_size = layer_config["units"]
-        num_flops = get_flops(model_from_layer(layer))
-        return [input_size, output_size, hidden_size, num_flops]
+        #num_flops = get_flops(model_from_layer(layer))
+        return [input_size, output_size, hidden_size]
     elif "conv" in current_layer_type:
         input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
         output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
@@ -116,8 +116,8 @@ def extract_layer_info(layer):
             num_filters = layer.output_shape[-1]
         kernel_size = np.prod([*[dim for dim in layer_config["kernel_size"] if dim != None]])
         stride = layer_config["strides"][0]
-        num_flops = get_flops(model_from_layer(layer))
-        return [input_size, output_size, num_filters, kernel_size, stride, num_flops]
+        #num_flops = get_flops(model_from_layer(layer))
+        return [input_size, output_size, num_filters, kernel_size, stride]
     elif "pool" in current_layer_type:
         try:
             input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
@@ -125,8 +125,8 @@ def extract_layer_info(layer):
             num_filters = 1
             pool_size = np.prod([*[dim for dim in layer_config["pool_size"] if dim != None]])
             stride = layer_config["strides"][0]
-            num_flops = get_flops(model_from_layer(layer))
-            return [input_size, output_size, num_filters, pool_size, stride, num_flops]
+            #num_flops = get_flops(model_from_layer(layer))
+            return [input_size, output_size, num_filters, pool_size, stride]
         except:  # Ignore
             return False
     return False
