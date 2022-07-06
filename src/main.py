@@ -1,12 +1,12 @@
 """
-1. Define dataset_path
-2. Create dataset (includes prepare)
-3. Preprocess the dataset
-4. Obtain splits
-5. Get model
-6. Train model
-7. Predict
-8. Evaluate
+1. Create dataset class instance
+2. Get train/validation/test splits
+3. Create model class instance
+4. Training
+    - Overfitting Test
+    - Full Training
+5. Inference
+6. Evaluation
 """
 import os
 import importlib
@@ -17,13 +17,10 @@ import csv
 import yaml
 from pathlib import Path
 
-yaml_path = "/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/run_config_layerwise.yaml"
+yaml_path = "/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/run_config_layerwise.yaml" # TODO: Needs to be set manually!
 config = yaml.safe_load(Path(yaml_path).read_text())
-print(config)
 
-# TODO: Collecting the training history and saving the training plots.
 def main():
-    # Import the dataset and convert the csv file into numpy arrays (not preprocessed yet).
     dataset_module = importlib.import_module(config['dataset']['module'])
     dataset_class = getattr(dataset_module, config['dataset']['class'])
     dataset = dataset_class(**config['dataset']['params'])
@@ -36,7 +33,6 @@ def main():
     else:
         print(
             f"Dataset:\nTraining:\tx: {x_train.shape}\ty: {y_train.shape}\nValidation:\tx: {x_val.shape}\ty: {y_val.shape}\nTest:\tx: {x_test.shape}\ty: {y_test.shape}\n")
-
 
     # Create the model.
     model_class_name = config['model_class']
