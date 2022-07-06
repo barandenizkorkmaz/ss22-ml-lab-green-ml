@@ -26,6 +26,11 @@ grid:
     type: choice
     options:
       - 1
+      - 16
+      - 17
+      - 64
+      - 65
+
 
 conv:
   fixed: 
@@ -59,7 +64,7 @@ dense:
       hidden_size:
         type: range 
         min: 10
-        max: 51
+        max: 101
         step: 5
 
 pretrained:
