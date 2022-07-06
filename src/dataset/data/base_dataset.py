@@ -9,6 +9,9 @@ class Dataset(ABC):
             *args:
             **kwargs:
         """
+        self.x_train, self.y_train = None, None
+        self.x_validation, self.y_validation = None, None
+        self.x_test, self.y_test = None, None
 
     @abstractmethod
     def load(self):
@@ -16,25 +19,38 @@ class Dataset(ABC):
         Read the raw_data as pd.dataframe given that is located in the field 'path' and set the field self.raw_data.
         """
 
-    @abstractmethod
-    def prepare(self, *args, **kwargs):
-        """
-            Initializes self.x and self.y numpy arrays which will contain the dataset given in the root_path.
-
-            Returns:
-                x, y
-
+    def get_train_set(self):
         """
 
-    @abstractmethod
-    def preprocessing(self, *args, **kwargs):
-        """
-            Preprocesses the dataset so that it can be fed for training and testing.
+        Args:
+            *args:
+            **kwargs:
 
-            Args:
-                x, y
-
-            Returns:
-                x, y
+        Returns:
 
         """
+        return self.x_train, self.y_train
+
+    def get_validation_set(self):
+        """
+
+        Args:
+            *args:
+            **kwargs:
+
+        Returns:
+
+        """
+        return self.x_validation, self.y_validation
+
+    def get_test_set(self):
+        """
+
+        Args:
+            *args:
+            **kwargs:
+
+        Returns:
+
+        """
+        return self.x_test, self.y_test

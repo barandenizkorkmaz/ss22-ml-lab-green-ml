@@ -5,7 +5,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import ast
-from .utils import indexify, one_hotify, flatten, convert_shapes, extract_layer_info, pad_to_dense, get_layer_type
+from .utils import indexify, one_hotify, flatten, convert_shapes, extract_layer_features, pad_to_dense, get_layer_type
 
 
 class LayerWiseDataset(Dataset):
@@ -14,6 +14,9 @@ class LayerWiseDataset(Dataset):
         self.file_path = kwargs['file_path']
         self.subset = kwargs['subset']
         self.load()
+        self.x, self.y = self.prepare(**kwargs)
+        self.x, self.y = self.preprocessing(self.x, self.y)
+        self.create_splits(**kwargs)
 
     def load(self):
         raw_data = pd.read_csv(self.file_path)
@@ -22,7 +25,26 @@ class LayerWiseDataset(Dataset):
         else:  # Options for subset are ['pretrained', 'simple'].
             self.data = raw_data.loc[raw_data['result.type'] == self.subset]
 
+    def extract_model_dataset(self, target_layer):
+        x = []
+        y = []
+        for model_index, row in self.data.iterrows():
+            current_model = []
+            model = tf.keras.models.model_from_json(row['result.model'])
+            power = row["result.power"]
+            for layer in model.layers:
+                layer_features = extract_layer_features(layer)
+                if layer_features != False:
+                    layer_type = get_layer_type(layer)
+                    if target_layer == layer_type:
+                        current_model.append(layer_features)
+            if len(current_model) > 0: # If any match for the corresponding layer is found on the current model
+                x.append(current_model)
+                y.append(power)
+        return x, y
+
     def prepare(self, **kwargs):
+        is_model_wise = kwargs['is_model_wise']
         target_layer = kwargs['target_layer']
         layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
                      'DepthwiseConv2D', 'Multiply', 'ReLU', 'Flatten', 'MaxPooling2D', 'Add', 'Conv2D', 'Normalization',
@@ -31,44 +53,40 @@ class LayerWiseDataset(Dataset):
         conv_features = ["input_shape","output_shape","filters", "kernel_size", "stride", "num_flops"]
         pool_features = ["input_shape","output_shape","filters (default=1)", "pool_size", "stride", "num_flops"]
         # TODO: The power of kernel/pool size can be taken wrt the dim (2d/3d).
-        x = []
-        y = []
-        layer_types_to_indices = {
-            'dense': [],
-            'conv': [],
-            'pool': []
-        }
-        for model_index, row in self.data.iterrows():
-            model = tf.keras.models.model_from_json(row['result.model'])
-            power_layerwise = ast.literal_eval(row["result.power_layerwise"])
-            for layer, power in zip(model.layers, power_layerwise):
-                if target_layer == "all":
-                    layer_info = extract_layer_info(layer)
-                    if layer_info != False:
-                        x.append(layer_info)
-                        y.append(power)
-                        layer_type = get_layer_type(layer)
-                        if layer_type in layer_types_to_indices:
-                            layer_types_to_indices[layer_type].append(len(layer_types_to_indices[layer_type]))
-                    continue
-                elif target_layer in layer.__class__.__name__.lower():
-                    layer_info = extract_layer_info(layer)
-                    if layer_info != False:
-                        x.append(layer_info)
-                        y.append(power)
-                        layer_type = get_layer_type(layer)
-                        if layer_type in layer_types_to_indices:
-                            layer_types_to_indices[layer_type].append(len(layer_types_to_indices[layer_type]))
-                    continue
-        x = pad_to_dense(x)
-        self.layer_types_to_indices = layer_types_to_indices
-        return np.array(x, dtype=np.uint16), np.array(y, dtype=float)
+        if is_model_wise:
+            x, y = self.extract_model_dataset(target_layer)
+            return x, y
+        else:
+            x = []
+            y = []
+            for model_index, row in self.data.iterrows():
+                model = tf.keras.models.model_from_json(row['result.model'])
+                power_layerwise = ast.literal_eval(row["result.power_layerwise"])
+                for layer, power in zip(model.layers, power_layerwise):
+                    if target_layer in layer.__class__.__name__.lower():
+                        layer_features = extract_layer_features(layer)
+                        if layer_features != False:
+                            x.append(layer_features)
+                            y.append(power)
+            x = pad_to_dense(x)
+            return np.array(x, dtype=np.uint16), np.array(y, dtype=float)
 
     def preprocessing(self, x, y):
-        y = y * 1e9
+        if type(y) is list:
+            y = [tmp*1e9 for tmp in y]
+        else:
+            y = y * 1e9
         #y = np.abs(y)  # Take abs due to issues with CodeCarbon
         #y = (y - np.min(y)) / (np.max(y) - np.min(y))  # Normalize
         return x, y
+
+    def create_splits(self, *args, **kwargs):
+        validation_split = kwargs['validation_split']
+        test_split = kwargs['test_split']
+        self.x_train, self.x_test, self.y_train, self.y_test = split(self.x, self.y, split_ratio=test_split, shuffle=True, seed=123)
+        if validation_split != False:
+            self.x_train, self.x_val, self.y_train, self.y_val = split(self.x_train, self.y_train, split_ratio=validation_split, shuffle=False, seed=None)
+
 
 def split(x, y, split_ratio, shuffle, seed):
     '''
