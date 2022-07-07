@@ -22,9 +22,10 @@ config = yaml.safe_load(Path(yaml_path).read_text())
 print(config)
 
 def main():
-    dataset_module = importlib.import_module(config['dataset']['module'])
-    dataset_class = getattr(dataset_module, config['dataset']['class'])
-    dataset = dataset_class(**config['dataset']['params'])
+    dataset_class_name = config['dataset_class']
+    dataset_module = importlib.import_module(config[dataset_class_name]['module'])
+    dataset_class = getattr(dataset_module, config[dataset_class_name]['class'])
+    dataset = dataset_class(**config[dataset_class_name]['params'])
 
     x_train, y_train = dataset.get_train_set()
     x_val, y_val = dataset.get_validation_set()
@@ -91,11 +92,11 @@ def main():
         plt.show()
 
     results = {
-        'dataset':config['dataset']['class'],
-        'subset':config['dataset']['params']['subset'],
-        'target_layer':config['dataset']['params']['target_layer'] if 'target_layer' in config['dataset']['params'] else None,
+        'dataset':config[dataset_class_name]['class'],
+        'subset':config[dataset_class_name]['params']['subset'],
+        'target_layer':config[dataset_class_name]['params']['target_layer'] if 'target_layer' in config[dataset_class_name]['params'] else None,
         'training_dataset':len(y_train),
-        'validation_dataset':len(y_val) if config['dataset']['params']['validation_split'] is not False else 0,
+        'validation_dataset':len(y_val) if config[dataset_class_name]['params']['validation_split'] is not False else 0,
         'test_dataset':len(y_test),
         'model_name':config[model_class_name]['class'],
         'n_features': x_train.shape[1],
