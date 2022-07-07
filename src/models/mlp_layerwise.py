@@ -1,4 +1,5 @@
 from .base_network import Network
+from .layers import *
 
 import tensorflow as tf
 from tensorflow import keras
@@ -6,7 +7,7 @@ from tensorflow.keras import layers
 from tensorflow.keras import Sequential
 from tensorflow.keras.layers import Dense
 
-class mlp_layerwise(Network):
+class ResidualMLP(Network):
     def __init__(self, **kwargs):
         super().__init__()
         self.batch_size = kwargs['batch_size']
@@ -15,7 +16,6 @@ class mlp_layerwise(Network):
         self.lr = kwargs['lr']
         self.n_features = kwargs['n_features']
         self.num_epochs_overfit = kwargs['num_epochs_overfit']
-        self.activation = kwargs['activation']
         self.model = self.create_model()
 
     def create_model(self):
@@ -37,6 +37,93 @@ class mlp_layerwise(Network):
         x_dense8 = layers.Dense(2, kernel_initializer='he_normal')(x_act7)
         x_act8 = layers.PReLU()(x_dense8)
         out = layers.Dense(1)(x_act8)
+        model = tf.keras.Model(x_input, out)
+
+        # compile the model
+        optimizer = tf.keras.optimizers.Adam(
+            learning_rate=self.lr
+        )
+        model.compile(optimizer=optimizer, loss=self.loss)
+        model.summary()
+        return model
+
+    def train(self, x_train, y_train, x_val, y_val):
+        num_epochs = self.num_epochs if len(x_train) != 1 else self.num_epochs_overfit
+        if x_val is not None and y_val is not None:
+            self.history = self.model.fit(
+                x_train,
+                y_train,
+                batch_size=self.batch_size,
+                epochs=num_epochs,
+                validation_data=(x_val, y_val)
+            )
+        else:
+            self.history = self.model.fit(
+                x_train,
+                y_train,
+                batch_size=self.batch_size,
+                epochs=num_epochs,
+                validation_data=None
+            )
+
+    def predict(self,x_test):
+        return self.model.predict(x_test)
+
+    def to_json(self):
+        return self.model.to_json()
+
+class GRN(Network):
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.batch_size = kwargs['batch_size']
+        self.num_epochs = kwargs['num_epochs']
+        self.loss = kwargs['loss']
+        self.lr = kwargs['lr']
+        self.n_features = kwargs['n_features']
+        self.num_epochs_overfit = kwargs['num_epochs_overfit']
+        self.model = self.create_model()
+
+    def create_model(self):
+        x_input = tf.keras.Input(shape=(self.n_features,))
+        x = GatedResidualNetwork(6, 0.1)(x_input)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(8, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(10, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(12, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(14, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(16, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(18, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(20, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(18, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(16, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(14, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(12, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(10, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(8, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(6, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = GatedResidualNetwork(5, 0.1)(x)
+        x = layers.PReLU()(x)
+        x = Dense(4)(x)
+        x = layers.PReLU()(x)
+        x = Dense(3)(x)
+        x = layers.PReLU()(x)
+        x = Dense(2)(x)
+        x = layers.PReLU()(x)
+        out = Dense(1)(x)
         model = tf.keras.Model(x_input, out)
 
         # compile the model
