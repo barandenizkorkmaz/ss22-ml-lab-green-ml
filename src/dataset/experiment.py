@@ -1,6 +1,6 @@
 from numpy import number
 from sacred import Experiment
-from experiments import energyEvaluation
+from utils import energyEvaluation
 import logging
 import importlib
 import seml
