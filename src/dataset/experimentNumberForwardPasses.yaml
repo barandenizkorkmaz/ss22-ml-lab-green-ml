@@ -1,0 +1,47 @@
+seml:
+  executable: dataset/experiment.py #TODO: change this
+  name: dataset_experiment
+  output_dir: dataset/logs/forwardPasses
+  project_root_dir: ..
+
+slurm:
+  experiments_per_job: 1
+  sbatch_options:
+    gres: gpu:1       # num GPUs
+    mem: 16G          # memory
+    cpus-per-task: 4  # num cores
+    time: 0-00:15     # max time, D-HH:MM
+    partition: mllab
+    exclusive: "" #Not sure if this is going to work
+    qos: labcourse
+    
+
+
+fixed:
+  layerwise: True
+  on_GPU: True
+
+grid:
+  batch_size: 
+    type: choice
+    options:
+      - 1
+
+
+  
+  
+
+dense:
+
+  fixed: 
+    model_file: dataset.models.dense
+    params:
+      number_layers: 5
+      hidden_size: 10
+
+  grid:
+    number_forward_passes:
+      type: loguniform
+      min: 1
+      max: 10000
+      num: 15
