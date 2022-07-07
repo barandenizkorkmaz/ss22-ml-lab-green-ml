@@ -97,7 +97,6 @@ def main():
         'validation_dataset':len(y_val) if config['dataset']['params']['validation_split'] is not False else 0,
         'test_dataset':len(y_test),
         'model_name':config[model_class_name]['class'],
-        'model':model.to_json() if callable(getattr(model, 'to_json', None)) else None,
         'n_features': x_train.shape[1],
         'degree':config[model_class_name]['params']['degree'] if 'degree' in config[model_class_name]['params'] else None,
         'activation': config[model_class_name]['params']['activation'] if 'activation' in config[model_class_name]['params'] else None,

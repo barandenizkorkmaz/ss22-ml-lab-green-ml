@@ -85,7 +85,7 @@ class LayerWiseDataset(Dataset):
         test_split = kwargs['test_split']
         self.x_train, self.x_test, self.y_train, self.y_test = split(self.x, self.y, split_ratio=test_split, shuffle=True, seed=123)
         if validation_split != False:
-            self.x_train, self.x_val, self.y_train, self.y_val = split(self.x_train, self.y_train, split_ratio=validation_split, shuffle=False, seed=None)
+            self.x_train, self.x_validation, self.y_train, self.y_validation = split(self.x_train, self.y_train, split_ratio=validation_split, shuffle=False, seed=None)
 
 
 def split(x, y, split_ratio, shuffle, seed):
