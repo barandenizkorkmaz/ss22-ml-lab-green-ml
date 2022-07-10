@@ -17,7 +17,7 @@ import csv
 import yaml
 from pathlib import Path
 
-yaml_path = "/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/run_config_layerwise.yaml" # TODO: Needs to be set manually!
+yaml_path = "/Users/baris/Documents/green-ml-daml/src/run_config_layerwise.yaml" # TODO: Needs to be set manually!
 config = yaml.safe_load(Path(yaml_path).read_text())
 
 def main():

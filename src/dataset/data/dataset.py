@@ -236,7 +236,11 @@ class ModelWiseDataset(Dataset):
         self.file_path = kwargs['file_path']
         self.one_hot = kwargs['one_hot']
         self.include_features = kwargs['include_features']
+        self.augmented = kwargs['augmented']
+        self.include_batch_size = kwargs['include_batch_size']
         self.load()
+        self.x, self.y = self.prepare()
+        self.create_splits(**kwargs)
         self.num_ops = None
 
     def load(self):
@@ -244,7 +248,7 @@ class ModelWiseDataset(Dataset):
         if self.subset == 'all':  # do nothing
             self.data = raw_data
         else:  # Options for subset are ['pretrained', 'simple'].
-            self.data = raw_data.loc[raw_data['subset'] == self.subset]
+            self.data = raw_data.loc[raw_data['resukt.type'] == self.subset]
 
 
     def prepare(self, **kwargs):
@@ -254,6 +258,7 @@ class ModelWiseDataset(Dataset):
         # TODO: The power of kernel/pool size can be taken wrt the dim (2d/3d).
         x = []
         y = []
+
         if self.include_features:
             for model_index, row in self.data.iterrows():
                 print(f"Processing Model {model_index+1}/{len(self.data)}")
@@ -291,24 +296,57 @@ class ModelWiseDataset(Dataset):
                 x.append(model_x)
                 y.append(power)
         else:
-            for model_index, row in self.data.iterrows():
-                print(f"Processing Model {model_index + 1}/{len(self.data)}")
-                try:
-                    model = tf.keras.models.model_from_json(row['result.model'])
-                    power = float(row['result.power'])
-                except:
-                    print(f"Error: Model {row['result.name']} with _id {row['_id']} could not be imported.")
-                    continue
-                model_x = []
-                for layer in model.layers:
-                    #layer_config = layer.get_config()
-                    model_x.append([layer.__class__.__name__, layer.input_shape, layer.output_shape])
-                    """model_x.append([layer.__class__.__name__,
-                                    *[dim for dim in layer.input_shape if dim != None],
-                                    *[dim for dim in layer.output_shape if dim != None]])"""
+            if self.augmented: #newer dataset with batch info
+                self.x_batches = []
+                for model_index, row in self.data.iterrows():
+                    print(f"Processing Model {model_index + 1}/{len(self.data)}")
+                    # if model_index > 50:
+                    #    continue
+                    try:
+                        model = tf.keras.models.model_from_json(row['result.model'])
+                        # model = tf.keras.models.model_from_json(ast.literal_eval(row['model'])['layers']['config']['layers'])
+                        power = float(row['result.power'])
+                        self.x_batches.append(float(row['config.batch_size']))
+                        # if np.abs(power) > 1e-5:
+                        # continue
+                    except:
+                        print(f"Error: Model {row['result.name']} with ID {row['_id']} could not be imported.")
+                        continue
+                    model_x = []
+                    for layer in model.layers:
 
-                x.append(model_x)
-                y.append(power)
+                        # layer_config = layer.get_config()
+                        if layer.__class__.__name__ == 'Functional':
+                            for sublayer in layer.layers:
+                                model_x.append([sublayer.__class__.__name__,
+                                                sublayer.input_shape,
+                                                sublayer.output_shape])
+                        else:
+                            model_x.append([layer.__class__.__name__,
+                                            layer.input_shape,
+                                            layer.output_shape])
+                    x.append(model_x)
+                    y.append(power)
+
+            else:#older dataset
+                for model_index, row in self.data.iterrows():
+                    print(f"Processing Model {model_index + 1}/{len(self.data)}")
+                    try:
+                        model = tf.keras.models.model_from_json(row['result.model'])
+                        power = float(row['result.power'])
+                    except:
+                        print(f"Error: Model {row['result.name']} with _id {row['_id']} could not be imported.")
+                        continue
+                    model_x = []
+                    for layer in model.layers:
+                        #layer_config = layer.get_config()
+                        model_x.append([layer.__class__.__name__, layer.input_shape, layer.output_shape])
+                        """model_x.append([layer.__class__.__name__,
+                                        *[dim for dim in layer.input_shape if dim != None],
+                                        *[dim for dim in layer.output_shape if dim != None]])"""
+
+                    x.append(model_x)
+                    y.append(power)
         x, y = self.preprocessing(x, y)
         return np.array(x, dtype=np.uint16), np.array(y, dtype=float)
 
@@ -324,6 +362,22 @@ class ModelWiseDataset(Dataset):
         x = convert_shapes(x)
         x = flatten(x)
 
+        if self.include_batch_size:
+            for idx, layer in enumerate(x):
+                for feat in layer:
+                    feat.append(self.x_batches[idx])
+
         x = tf.keras.preprocessing.sequence.pad_sequences(x, padding='post')
 
         return x, y
+
+    def create_splits(self, *args, **kwargs):
+        validation_split = kwargs['validation_split']
+        test_split = kwargs['test_split']
+        self.x_train, self.x_test, self.y_train, self.y_test = split(self.x, self.y,
+                                                                     split_ratio=test_split,
+                                                                     shuffle=True, seed=123)
+        if validation_split != False:
+            self.x_train, self.x_validation, self.y_train, self.y_validation = split(self.x_train, self.y_train,
+                                                                                     split_ratio=validation_split,
+                                                                                     shuffle=False, seed=None)
