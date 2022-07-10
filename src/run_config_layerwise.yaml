@@ -1,15 +1,26 @@
-dataset:
+dataset_class: LayerWiseDatasetv2 # Needs to be set manually
+
+LayerWiseDataset:
   module: src.dataset.data.dataset
   class: LayerWiseDataset
   params:
     file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv # Needs to be set manually
     subset: pretrained
     target_layer: conv
-    is_model_wise: False
     validation_split: 0.2
     test_split: 0.2
 
-model_class: GRN # Needs to be set manually
+LayerWiseDatasetv2:
+  module: src.dataset.data.dataset
+  class: LayerWiseDatasetv2
+  params:
+    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv # Needs to be set manually
+    subset: pretrained
+    target_layer: conv
+    validation_split: False
+    test_split: 0.2
+
+model_class: polynomial_regression # Needs to be set manually
 
 polynomial_regression:
   module: src.models.polynomial_regression
@@ -18,7 +29,7 @@ polynomial_regression:
     degree: 3
 
 ResidualMLP:
-  module: src.models.mlp_layerwise
+  module: src.models.nn_layerwise
   class: ResidualMLP
   params:
     batch_size: 64
@@ -29,7 +40,7 @@ ResidualMLP:
     num_epochs_overfit: 3000
 
 GRN:
-  module: src.models.mlp_layerwise
+  module: src.models.nn_layerwise
   class: GRN
   params:
     batch_size: 64

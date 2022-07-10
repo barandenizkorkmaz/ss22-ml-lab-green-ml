@@ -3,8 +3,8 @@ from datetime import datetime
 from autogluon.core.metrics import make_scorer
 from metrics import rmspe
 
-subsets = ['pretrained', 'simple', 'all']
-target_layers = ['dense', 'pool', 'conv']
+subsets = ['pretrained']
+target_layers = ['dense']
 
 for subset in subsets:
     for target_layer in target_layers:
@@ -15,7 +15,7 @@ for subset in subsets:
         now = datetime.now() # current date and time
         timestamp = now.strftime("%m-%d-%Y--%H:%M:%S")
 
-        time_limit = 60
+        time_limit = 600
         presets='best_quality'
 
         train_data = TabularDataset(train_data_path)
@@ -25,7 +25,7 @@ for subset in subsets:
         print("Summary of class variable: \n", train_data[label].describe())
 
         save_path = f'agModels-greenML-{timestamp}-{subset}-{target_layer}'  # specifies folder to store trained models
-        predictor = TabularPredictor(label=label, path=save_path).fit(train_data, time_limit=time_limit)
+        predictor = TabularPredictor(label=label, path=save_path).fit(train_data, time_limit=time_limit, presets=presets)
 
         test_data = TabularDataset(test_data_path)
         y_test = test_data[label]  # values to predict
