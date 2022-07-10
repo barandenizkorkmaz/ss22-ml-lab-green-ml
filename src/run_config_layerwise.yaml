@@ -1,10 +1,10 @@
-dataset_class: LayerWiseDatasetv2 # Needs to be set manually
+dataset_class: LayerWiseDatasetv2 # TODO: Needs to be set manually to the key for the dataset.
 
-LayerWiseDataset:
+LayerWiseDataset: # Here key for the dataset is LayerWiseDataset.
   module: src.dataset.data.dataset
-  class: LayerWiseDataset
+  class: LayerWiseDataset # The explicit name of the dataset class.
   params:
-    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv # Needs to be set manually
+    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv # TODO: Needs to be set manually
     subset: pretrained
     target_layer: conv
     validation_split: 0.2
@@ -14,17 +14,17 @@ LayerWiseDatasetv2:
   module: src.dataset.data.dataset
   class: LayerWiseDatasetv2
   params:
-    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv # Needs to be set manually
+    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv
     subset: pretrained
     target_layer: conv
-    validation_split: False
+    validation_split: 0.2
     test_split: 0.2
 
-model_class: polynomial_regression # Needs to be set manually
+model_class: GRN # TODO: Needs to be set manually to the key for the model.
 
-polynomial_regression:
+polynomial_regression: # Here key for the model is polynomial_regression.
   module: src.models.polynomial_regression
-  class: PolynomialRegression
+  class: PolynomialRegression # The explicit name of the model class.
   params:
     degree: 3
 
@@ -44,10 +44,10 @@ GRN:
   class: GRN
   params:
     batch_size: 64
-    num_epochs: 5000
+    num_epochs: 500
     loss: mse
     lr: 0.0001
-    n_features: 5 # TODO: Needs to be set manually!
+    n_features: 5
     num_epochs_overfit: 3000
 
 evaluation:

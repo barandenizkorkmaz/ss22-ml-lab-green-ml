@@ -16,6 +16,11 @@ class LayerWiseDataset(Dataset):
         self.x, self.y = self.prepare(**kwargs)
         self.x, self.y = self.preprocessing(self.x, self.y)
         self.create_splits(**kwargs)
+        # Data Preprocessing - The class function preprocessing by the user's preferences...
+        self.x_train, self.y_train = self.preprocessing(self.x_train, self.y_train)
+        self.x_test, self.y_test = self.preprocessing(self.x_test, self.y_test)
+        if self.x_validation is not None and self.y_validation is not None:
+            self.x_validation, self.y_validation = self.preprocessing(self.x_validation, self.y_validation)
 
     def load(self):
         raw_data = pd.read_csv(self.file_path)
@@ -149,6 +154,8 @@ class LayerWiseDatasetv2(Dataset):
                     tmp_y.append(layer_y)
         tmp_x = np.array(tmp_x, dtype=np.uint16)
         tmp_y = np.array(tmp_y, dtype=np.float)
+        # Data Preprocessing
+        tmp_x, tmp_y = self.preprocessing(tmp_x, tmp_y)
         return tmp_x, tmp_y
 
 
