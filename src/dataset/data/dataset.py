@@ -1,5 +1,6 @@
 from .base_dataset import Dataset
 
+import os
 import tensorflow as tf
 import numpy as np
 import pandas as pd
@@ -7,41 +8,35 @@ from sklearn.model_selection import train_test_split
 import ast
 from .utils import indexify, one_hotify, flatten, convert_shapes, extract_layer_features, pad_to_dense, get_layer_type
 
-class LayerWiseDataset(Dataset):
+class LayerWiseDatasetv1Small(Dataset):
     def __init__(self, **kwargs):
         super().__init__()
         self.file_path = kwargs['file_path']
         self.subset = kwargs['subset']
-        self.load()
-        self.x, self.y = self.prepare(**kwargs)
+        self.target_layer = kwargs['target_layer']
+        self.load_dataset(**kwargs)
         # Data Preprocessing - The class function preprocessing by the user's preferences...
         self.x, self.y = self.preprocessing(self.x, self.y)
         self.create_splits(**kwargs)
+        del self.x, self.y
 
-    def load(self):
+    def load_csv(self):
         raw_data = pd.read_csv(self.file_path)
         if self.subset == 'all':  # do nothing
             self.data = raw_data
         else:  # Options for subset are ['pretrained', 'simple'].
             self.data = raw_data.loc[raw_data['result.type'] == self.subset]
 
-    def extract_model_dataset(self, target_layer):
-        x = []
-        y = []
-        for model_index, row in self.data.iterrows():
-            current_model = []
-            model = tf.keras.models.model_from_json(row['result.model'])
-            power = row["result.power"]
-            for layer in model.layers:
-                layer_features = extract_layer_features(layer)
-                if layer_features != False:
-                    layer_type = get_layer_type(layer)
-                    if target_layer == layer_type:
-                        current_model.append(layer_features)
-            if len(current_model) > 0: # If any match for the corresponding layer is found on the current model
-                x.append(current_model)
-                y.append(power)
-        return x, y
+    def load_dataset(self, **kwargs):
+        if kwargs['load_dataset'] and (os.path.isfile(kwargs['dataset_path_x']) and os.path.isfile(kwargs['dataset_path_y'])):
+            self.load(**kwargs)
+            print("Load_dataset successful!")
+        else:
+            print("Load_dataset failed. Preparing the dataset from the scratch.")
+            self.load_csv()
+            self.x, self.y = self.prepare(**kwargs)
+            del self.data
+            self.save()
 
     def prepare(self, **kwargs):
         target_layer = kwargs['target_layer']
@@ -51,20 +46,25 @@ class LayerWiseDataset(Dataset):
         dense_features = ["input_shape","output_shape","hidden_size", "num_flops"]
         conv_features = ["input_shape","output_shape","filters", "kernel_size", "stride", "num_flops"]
         pool_features = ["input_shape","output_shape","filters (default=1)", "pool_size", "stride", "num_flops"]
-        # TODO: The power of kernel/pool size can be taken wrt the dim (2d/3d).
         x = []
         y = []
         for model_index, row in self.data.iterrows():
+            print(f"Processing model {model_index}")
             model = tf.keras.models.model_from_json(row['result.model'])
             power_layerwise = ast.literal_eval(row["result.power_layerwise"])
             for layer, power in zip(model.layers, power_layerwise):
                 if target_layer in layer.__class__.__name__.lower():
                     layer_features = extract_layer_features(layer)
                     if layer_features != False:
+                        if "config.batch_size" in self.data:
+                            batch_size = row["config.batch_size"]
+                            layer_features.insert(0, batch_size)
                         x.append(layer_features)
                         y.append(power)
-        x = pad_to_dense(x)
-        return np.array(x, dtype=np.uint16), np.array(y, dtype=float)
+        x = np.array(x, dtype=np.uint16)
+        y = np.array(y, dtype=float)
+        print(f"(prepare)\tShape of X: {x.shape}\tShape of Y: {y.shape}")
+        return x, y
 
     def preprocessing(self, x, y):
         if type(y) is list:
@@ -82,20 +82,50 @@ class LayerWiseDataset(Dataset):
         if validation_split != False:
             self.x_train, self.x_validation, self.y_train, self.y_validation = split(self.x_train, self.y_train, split_ratio=validation_split, shuffle=False, seed=None)
 
-class LayerWiseDatasetv2(Dataset):
+    def load(self, *args, **kwargs):
+        dataset_path_x = kwargs['dataset_path_x']
+        dataset_path_y = kwargs['dataset_path_y']
+        with open(dataset_path_x, 'rb') as f:
+            self.x = np.load(f)
+        with open(dataset_path_y, 'rb') as f:
+            self.y = np.load(f)
+
+    def save(self):
+        """
+        Saves the entire dataset. i.e. x and y
+        """
+        with open(f'LayerWiseDatasetv1Small-{self.subset}-{self.target_layer}-x.npy', 'wb') as f:
+            np.save(f, self.x)
+        with open(f'LayerWiseDatasetv1Small-{self.subset}-{self.target_layer}-y.npy', 'wb') as f:
+            np.save(f, self.y)
+
+class LayerWiseDatasetv2Small(Dataset):
     def __init__(self, **kwargs):
         super().__init__()
         self.file_path = kwargs['file_path']
         self.subset = kwargs['subset']
-        self.load()
-        self.raw_x, self.raw_y, self.y_modelwise = self.get_raw_dataset(**kwargs)
+        self.load_dataset(**kwargs)
         self.get_raw_splits(**kwargs)
+        del self.raw_x, self.raw_y, self.y_modelwise
         self.x_train, self.y_train = self.raw_split_to_training_split(self.raw_x_train, self.raw_y_train,**kwargs)
+        del self.raw_x_train, self.raw_y_train, self.y_modelwise_train
         self.x_test, self.y_test = self.raw_split_to_training_split(self.raw_x_test, self.raw_y_test,**kwargs)
         if kwargs['validation_split']:
             self.x_validation, self.y_validation = self.raw_split_to_training_split(self.raw_x_val, self.raw_y_val,**kwargs)
+            del self.raw_x_val, self.raw_y_val, self.y_modelwise_val
 
-    def load(self):
+    def load_dataset(self, **kwargs):
+        if kwargs['load_dataset'] and (os.path.isfile(kwargs['dataset_path_raw_x']) and os.path.isfile(kwargs['dataset_path_raw_y']) and os.path.isfile(kwargs['dataset_path_y_modelwise'])):
+            self.load(**kwargs)
+            print("Load_dataset successful!")
+        else:
+            print("Load_dataset failed. Preparing the dataset from the scratch.")
+            self.load_csv()
+            self.raw_x, self.raw_y, self.y_modelwise = self.get_raw_dataset(**kwargs)
+            del self.data
+            self.save()
+
+    def load_csv(self):
         raw_data = pd.read_csv(self.file_path)
         if self.subset == 'all':  # do nothing
             self.data = raw_data
@@ -107,6 +137,7 @@ class LayerWiseDatasetv2(Dataset):
         y_layerwise = []
         y_modelwise = []
         for model_index, row in self.data.iterrows():
+            print(f"Processing model {model_index}")
             current_model = []
             current_y_layerwise = []
             model = tf.keras.models.model_from_json(row['result.model'])
@@ -116,10 +147,12 @@ class LayerWiseDatasetv2(Dataset):
                 layer_features = extract_layer_features(layer)
                 if layer_features != False:
                     layer_type = get_layer_type(layer)
+                    if "config.batch_size" in self.data:
+                        batch_size = row["config.batch_size"]
+                        layer_features.insert(0, batch_size)
                     layer_features.insert(0, layer_type)
                     current_model.append(layer_features)
                     current_y_layerwise.append(power_layer)
-
             if len(current_model) > 0:  # If any match for the corresponding layer is found on the current model
                 x.append(current_model)
                 y_modelwise.append(power_model)
@@ -154,6 +187,140 @@ class LayerWiseDatasetv2(Dataset):
         tmp_x, tmp_y = self.preprocessing(tmp_x, tmp_y)
         return tmp_x, tmp_y
 
+    def preprocessing(self, x, y):
+        if type(y) is list:
+            y = [tmp*1e9 for tmp in y]
+        else:
+            y = y * 1e9
+        #y = np.abs(y)  # Take abs due to issues with CodeCarbon
+        #y = (y - np.min(y)) / (np.max(y) - np.min(y))  # Normalize
+        return x, y
+
+    def load(self, *args, **kwargs):
+        import pickle
+        dataset_path_raw_x = kwargs['dataset_path_raw_x']
+        dataset_path_raw_y = kwargs['dataset_path_raw_y']
+        dataset_path_y_modelwise = kwargs['dataset_path_y_modelwise']
+        with open(dataset_path_raw_x, 'rb') as f:
+            self.raw_x = pickle.load(f)
+        with open(dataset_path_raw_y, 'rb') as f:
+            self.raw_y = pickle.load(f)
+        with open(dataset_path_y_modelwise, 'rb') as f:
+            self.y_modelwise = pickle.load(f)
+
+    def save(self):
+        """
+        Saves the entire dataset. i.e. x and y
+        """
+        import pickle
+        with open(f'LayerWiseDatasetv2Small-{self.subset}-raw_x.pkl', 'wb') as f:
+            pickle.dump(self.raw_x, f)
+        with open(f'LayerWiseDatasetv2Small-{self.subset}-raw_y.pkl', 'wb') as f:
+            pickle.dump(self.raw_y, f)
+        with open(f'LayerWiseDatasetv2Small-{self.subset}-y_modelwise.pkl', 'wb') as f:
+            pickle.dump(self.y_modelwise, f)
+
+class LayerWiseDatasetv2Large(Dataset):
+    def __init__(self, **kwargs):
+        super().__init__()
+        self.dataset_class = 'LayerWiseDatasetv2Large'
+        self.file_path = kwargs['file_path']
+        self.subset = kwargs['subset']
+        self.load_dataset(**kwargs)
+        self.get_raw_splits(**kwargs)
+        del self.raw_x, self.raw_y, self.y_modelwise
+        self.x_train, self.y_train = self.raw_split_to_training_split(self.raw_x_train, self.raw_y_train,**kwargs)
+        del self.raw_x_train, self.raw_y_train, self.y_modelwise_train
+        self.x_test, self.y_test = self.raw_split_to_training_split(self.raw_x_test, self.raw_y_test,**kwargs)
+        if kwargs['validation_split']:
+            self.x_validation, self.y_validation = self.raw_split_to_training_split(self.raw_x_val, self.raw_y_val,**kwargs)
+            del self.raw_x_val, self.raw_y_val, self.y_modelwise_val
+        if kwargs['save_splits']:
+            self.save_splits(**kwargs)
+
+    def load_dataset(self, **kwargs):
+        if kwargs['load_dataset'] and (os.path.isfile(kwargs['dataset_path_raw_x']) and os.path.isfile(kwargs['dataset_path_raw_y']) and os.path.isfile(kwargs['dataset_path_y_modelwise'])):
+            self.load(**kwargs)
+            print("Load_dataset successful!")
+        else:
+            print("Load_dataset failed. Preparing the dataset from the scratch.")
+            self.load_csv()
+            self.raw_x, self.raw_y, self.y_modelwise = self.get_raw_dataset(**kwargs)
+            del self.data
+            self.save()
+
+    def load_csv(self):
+        raw_data = pd.read_csv(self.file_path)
+        if self.subset == 'all':  # do nothing
+            self.data = raw_data
+        else:  # Options for subset are ['pretrained', 'simple'].
+            self.data = raw_data.loc[raw_data['result.type'] == self.subset]
+
+    def get_raw_dataset(self, **kwargs):
+        x = []
+        y_layerwise = []
+        y_modelwise = []
+        for model_index, row in self.data.iterrows():
+            current_model = []
+            current_y_layerwise = []
+            model = tf.keras.models.model_from_json(row['result.model'])
+            power_model = row["result.power"]
+            power_layerwise = ast.literal_eval(row["result.power_layerwise"])
+            num_layer_base_model = len(model.layers[0].layers)
+            print(f"(get_raw_dataset)\tProcessing model {model_index}\tModel Name: {row['result.name']}\tNum Layers in Base Model: {num_layer_base_model}")
+            for i, layer in enumerate(model.layers):
+                if i == 0:
+                    for j, sublayer in enumerate(layer.layers):
+                        layer_num = j
+                        layer_features = extract_layer_features(sublayer)
+                        if layer_features != False:
+                            layer_type = get_layer_type(sublayer)
+                            batch_size = row["config.batch_size"]
+                            layer_features = [layer_type, batch_size, *layer_features]
+                            current_model.append(layer_features)
+                            current_y_layerwise.append(power_layerwise[layer_num])
+                else:
+                    layer_num = num_layer_base_model + i - 1
+                    layer_features = extract_layer_features(layer)
+                    if layer_features != False:
+                        layer_type = get_layer_type(layer)
+                        batch_size = row["config.batch_size"]
+                        layer_features = [layer_type, batch_size, *layer_features]
+                        current_model.append(layer_features)
+                        current_y_layerwise.append(power_layerwise[layer_num])
+            if len(current_model) > 0:  # If any match for the corresponding layer is found on the current model
+                x.append(current_model)
+                y_modelwise.append(power_model)
+                y_layerwise.append(current_y_layerwise)
+        print(f"(getRawDataset)\tNumber of Models in the Dataset: {len(x)}")
+        return x, y_layerwise, y_modelwise
+
+    def get_raw_splits(self, **kwargs):
+        x, y, y_modelwise = shuffle_iterables(True, 123, self.raw_x, self.raw_y, self.y_modelwise)
+        self.raw_x_train, self.raw_x_test = split_2(x, split_ratio=kwargs['test_split'])
+        self.raw_y_train, self.raw_y_test = split_2(y, split_ratio=kwargs['test_split'])
+        self.y_modelwise_train, self.y_modelwise_test = split_2(y_modelwise, split_ratio=kwargs['test_split'])
+        if kwargs['validation_split']:
+            self.raw_x_train, self.raw_x_val = split_2(self.raw_x_train, split_ratio=kwargs['validation_split'])
+            self.raw_y_train, self.raw_y_val = split_2(self.raw_y_train, split_ratio=kwargs['validation_split'])
+            self.y_modelwise_train, self.y_modelwise_val = split_2(self.y_modelwise_train, split_ratio=kwargs['validation_split'])
+        else:
+            self.raw_x_val, self.raw_y_val, self.y_modelwise_val = None, None, None
+
+    def raw_split_to_training_split(self, raw_x_split, raw_y_split, **kwargs):
+        target_layer = kwargs['target_layer']
+        tmp_x = []
+        tmp_y = []
+        for model_x, model_y in zip(raw_x_split, raw_y_split):
+            for layer_x, layer_y in zip(model_x, model_y):
+                if layer_x[0] == target_layer:
+                    tmp_x.append(layer_x[1:])
+                    tmp_y.append(layer_y)
+        tmp_x = np.array(tmp_x, dtype=np.int)
+        tmp_y = np.array(tmp_y, dtype=np.float)
+        # Data Preprocessing
+        tmp_x, tmp_y = self.preprocessing(tmp_x, tmp_y)
+        return tmp_x, tmp_y
 
     def preprocessing(self, x, y):
         if type(y) is list:
@@ -163,6 +330,43 @@ class LayerWiseDatasetv2(Dataset):
         #y = np.abs(y)  # Take abs due to issues with CodeCarbon
         #y = (y - np.min(y)) / (np.max(y) - np.min(y))  # Normalize
         return x, y
+
+    def load(self, *args, **kwargs):
+        import pickle
+        dataset_path_raw_x = kwargs['dataset_path_raw_x']
+        dataset_path_raw_y = kwargs['dataset_path_raw_y']
+        dataset_path_y_modelwise = kwargs['dataset_path_y_modelwise']
+        with open(dataset_path_raw_x, 'rb') as f:
+            self.raw_x = pickle.load(f)
+        with open(dataset_path_raw_y, 'rb') as f:
+            self.raw_y = pickle.load(f)
+        with open(dataset_path_y_modelwise, 'rb') as f:
+            self.y_modelwise = pickle.load(f)
+
+    def save(self):
+        """
+        Saves the entire dataset. i.e. x and y
+        """
+        import pickle
+        with open(f'LayerWiseDatasetv2Large-raw_x.pkl', 'wb') as f:
+            pickle.dump(self.raw_x, f)
+        with open(f'LayerWiseDatasetv2Large-raw_y.pkl', 'wb') as f:
+            pickle.dump(self.raw_y, f)
+        with open(f'LayerWiseDatasetv2Large-y_modelwise.pkl', 'wb') as f:
+            pickle.dump(self.y_modelwise, f)
+
+    def save_splits(self, *args, **kwargs):
+        splits = {
+            'train': (self.x_train, self.y_train),
+            'validation': (self.x_validation, self.y_validation),
+            'test': (self.x_test, self.y_test)
+        }
+        for split in splits:
+            x_split, y_split = splits[split]
+            with open(f"{self.dataset_class}-{self.subset}-{kwargs['target_layer']}-x_{split}.npy", 'wb') as f:
+                np.save(f, x_split)
+            with open(f"{self.dataset_class}-{self.subset}-{kwargs['target_layer']}-y_{split}.npy", 'wb') as f:
+                np.save(f, y_split)
 
 def split(x, y, split_ratio, shuffle, seed):
     '''

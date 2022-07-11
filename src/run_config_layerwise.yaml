@@ -1,32 +1,54 @@
-dataset_class: LayerWiseDatasetv2 # TODO: Needs to be set manually to the key for the dataset.
+dataset_class: LayerWiseDatasetv2Large # TODO: Needs to be set manually to the key for the dataset.
 
-LayerWiseDataset: # Here key for the dataset is LayerWiseDataset.
+LayerWiseDatasetv1Small: # Here key for the dataset is LayerWiseDataset.
   module: src.dataset.data.dataset
-  class: LayerWiseDataset # The explicit name of the dataset class.
+  class: LayerWiseDatasetv1Small # The explicit name of the dataset class.
   params:
-    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv # TODO: Needs to be set manually
+    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasets/dataset_v1_gpu.csv # TODO: Needs to be set manually
     subset: pretrained
-    target_layer: conv
-    validation_split: 0.2
+    target_layer: pool
+    validation_split: False
     test_split: 0.2
+    load_dataset: True
+    dataset_path_x: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv1Small-pretrained-pool-x.npy
+    dataset_path_y: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv1Small-pretrained-pool-y.npy
 
-LayerWiseDatasetv2:
+LayerWiseDatasetv2Small:
   module: src.dataset.data.dataset
-  class: LayerWiseDatasetv2
+  class: LayerWiseDatasetv2Small
   params:
-    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasetGPU.csv
+    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasets/dataset_v1_gpu.csv
     subset: pretrained
-    target_layer: conv
-    validation_split: 0.2
+    target_layer: dense
+    validation_split: False
     test_split: 0.2
+    load_dataset: True
+    dataset_path_raw_x: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Small-pretrained-raw_x.pkl
+    dataset_path_raw_y: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Small-pretrained-raw_y.pkl
+    dataset_path_y_modelwise: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Small-pretrained-y_modelwise.pkl
 
-model_class: GRN # TODO: Needs to be set manually to the key for the model.
+LayerWiseDatasetv2Large:
+  module: src.dataset.data.dataset
+  class: LayerWiseDatasetv2Large
+  params:
+    file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasets/dataset_v2_gpu.csv
+    subset: pretrained
+    target_layer: pool
+    validation_split: 0.25
+    test_split: 0.2
+    load_dataset: True
+    dataset_path_raw_x: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-raw_x.pkl
+    dataset_path_raw_y: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-raw_y.pkl
+    dataset_path_y_modelwise: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-y_modelwise.pkl
+    save_splits: True
+
+model_class: polynomial_regression # TODO: Needs to be set manually to the key for the model.
 
 polynomial_regression: # Here key for the model is polynomial_regression.
   module: src.models.polynomial_regression
   class: PolynomialRegression # The explicit name of the model class.
   params:
-    degree: 3
+    degree: 4
 
 ResidualMLP:
   module: src.models.nn_layerwise
