@@ -1,6 +1,12 @@
 #Logs
+log/
 logs/
 *.png
+*.npy
+*.csv
+*.csv#
+*.pkl
+
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

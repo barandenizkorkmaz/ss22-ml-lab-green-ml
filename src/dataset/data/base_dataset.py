@@ -14,7 +14,7 @@ class Dataset(ABC):
         self.x_test, self.y_test = None, None
 
     @abstractmethod
-    def load(self):
+    def load_csv(self):
         """
         Read the raw_data as pd.dataframe given that is located in the field 'path' and set the field self.raw_data.
         """
