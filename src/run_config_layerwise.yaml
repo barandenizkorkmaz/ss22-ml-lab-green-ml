@@ -27,6 +27,7 @@ LayerWiseDatasetv2Small:
     dataset_path_raw_y: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Small-pretrained-raw_y.pkl
     dataset_path_y_modelwise: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Small-pretrained-y_modelwise.pkl
 
+<<<<<<< src/run_config_layerwise.yaml
 LayerWiseDatasetv2Large:
   module: src.dataset.data.dataset
   class: LayerWiseDatasetv2Large
@@ -42,7 +43,22 @@ LayerWiseDatasetv2Large:
     dataset_path_y_modelwise: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-y_modelwise.pkl
     save_splits: True
 
-model_class: polynomial_regression # TODO: Needs to be set manually to the key for the model.
+ModelWiseDataset:
+  module: src.dataset.data.dataset
+  class: ModelWiseDataset
+  params:
+    file_path: /Users/baris/Documents/green-ml-daml/src/dataset/datasetPretrainedbatch.csv # Needs to be set manually
+    subset: all
+    one_hot: True
+    include_features: False
+    augmented: True
+    include_batch_size: True
+    validation_split: 0.2
+    test_split: 0.2
+
+
+model_class: GRN # TODO: Needs to be set manually to the key for the model.
+>>>>>>> src/run_config_layerwise.yaml
 
 polynomial_regression: # Here key for the model is polynomial_regression.
   module: src.models.polynomial_regression
@@ -72,6 +88,65 @@ GRN:
     n_features: 5
     num_epochs_overfit: 3000
 
+SimpleRNN:
+  module: src.models.modelwise_nets
+  class: SimpleRNN
+  params:
+    ragged: False
+    mask: True
+    batch_size: 200
+    num_epochs: 500
+    units: 32
+    hidden_dense: 64
+    loss: mse
+    lr: 0.0001
+    num_epochs_overfit: 3000
+
+EmbeddedRNN:
+  module: src.models.modelwise_nets
+  class: EmbeddedRNN
+  params:
+    seq_len: 605
+    feat_size: 8
+    num_ops: 19
+    out_dim: 10
+
+    batch_size: 200
+    num_epochs: 500
+    units: 32
+    hidden_dense: 16
+    loss: mse
+    lr: 0.0001
+    num_epochs_overfit: 3000
+
+MLP:
+  module: src.models.modelwise_nets
+  class: MLP
+  params:
+    batch_size: 200
+    num_epochs: 500
+    loss: mse
+    lr: 0.0001
+    num_epochs_overfit: 3000
+
+Transformer:
+  module: src.models.modelwise_nets
+  class: Transformer
+  params:
+    input_shape: [605, 26]
+    head_size: 64
+    num_heads: 4
+    ff_dim: 4
+    num_transformer_blocks: 4
+    mlp_units: [128]
+    mlp_dropout: 0.4
+    dropout: 0.5
+    batch_size: 50
+    num_epochs: 100
+    loss: mse
+    lr: 0.0001
+    num_epochs_overfit: 3000
+
 evaluation:
   module: src.models.metrics
   metrics:
@@ -80,3 +155,4 @@ evaluation:
     - rmse
     - rmspe
     - r2
+
