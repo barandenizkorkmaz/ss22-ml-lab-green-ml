@@ -442,17 +442,17 @@ class ModelWiseDataset(Dataset):
         self.include_features = kwargs['include_features']
         self.augmented = kwargs['augmented']
         self.include_batch_size = kwargs['include_batch_size']
-        self.load()
+        self.load_csv()
         self.x, self.y = self.prepare()
         self.create_splits(**kwargs)
         self.num_ops = None
 
-    def load(self):
+    def load_csv(self):
         raw_data = pd.read_csv(self.file_path)
         if self.subset == 'all':  # do nothing
             self.data = raw_data
         else:  # Options for subset are ['pretrained', 'simple'].
-            self.data = raw_data.loc[raw_data['resukt.type'] == self.subset]
+            self.data = raw_data.loc[raw_data['result.type'] == self.subset]
 
 
     def prepare(self, **kwargs):
