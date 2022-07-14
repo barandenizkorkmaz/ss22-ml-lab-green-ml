@@ -33,9 +33,9 @@ LayerWiseDatasetv2Large:
   params:
     file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasets/dataset_v2_gpu.csv
     subset: pretrained
-    target_layer: pool
-    validation_split: 0.25
-    test_split: 0.2
+    target_layer: concatenate
+    validation_split: False # Please keep as False for autogluon experiments.
+    test_split: 0.2 # Please keep as 0.2 for autogluon experiments.
     load_dataset: True
     dataset_path_raw_x: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-raw_x.pkl
     dataset_path_raw_y: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-raw_y.pkl

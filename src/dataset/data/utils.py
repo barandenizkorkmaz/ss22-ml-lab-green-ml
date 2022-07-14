@@ -106,7 +106,7 @@ def extract_layer_features(layer):
         output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
         hidden_size = layer_config["units"]
         #num_flops = get_flops(model_from_layer(layer))
-        return [input_size, output_size, hidden_size]
+        return [input_size, output_size, hidden_size], "dense"
     elif "conv" in current_layer_type:
         input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
         output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
@@ -117,7 +117,7 @@ def extract_layer_features(layer):
         kernel_size = np.prod([*[dim for dim in layer_config["kernel_size"] if dim != None]])
         stride = layer_config["strides"][0]
         #num_flops = get_flops(model_from_layer(layer))
-        return [input_size, output_size, num_filters, kernel_size, stride]
+        return [input_size, output_size, num_filters, kernel_size, stride], "conv"
     elif "pool" in current_layer_type:
         try:
             input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
@@ -126,7 +126,73 @@ def extract_layer_features(layer):
             pool_size = np.prod([*[dim for dim in layer_config["pool_size"] if dim != None]])
             stride = layer_config["strides"][0]
             #num_flops = get_flops(model_from_layer(layer))
-            return [input_size, output_size, num_filters, pool_size, stride]
+            return [input_size, output_size, num_filters, pool_size, stride], "pool"
+        except:  # Ignore
+            return False
+    elif current_layer_type == "inputlayer":
+        try:
+            input_size = np.prod([*[dim for dim in layer_config['batch_input_shape'] if dim != None]])
+            return [input_size], "inputlayer"
+        except:
+            return False
+    elif "pad" in current_layer_type:
+        try:
+            input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
+            output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
+            padding = layer_config["padding"]
+            padding = sum(flatten_iterable(padding))
+            return [input_size, output_size, padding], "pad"
+        except:  # Ignore
+            return False
+    elif "normalization" in current_layer_type:
+        try:
+            input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
+            output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
+            return [input_size, output_size], "normalization"
+        except:  # Ignore
+            return False
+    elif "activation" in current_layer_type or "relu" in current_layer_type:
+        try:
+            input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
+            return [input_size], "activation"
+        except:  # Ignore
+            return False
+    elif "rescaling" in current_layer_type:
+        try:
+            input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
+            return [input_size], "rescaling"
+        except:  # Ignore
+            return False
+    elif "reshape" in current_layer_type:
+        try:
+            input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
+            target_shape = np.prod([*[dim for dim in flatten_iterable(layer_config['target_shape']) if dim != None]])
+            return [input_size, target_shape], "reshape"
+        except:  # Ignore
+            return False
+    elif current_layer_type == "dropout":
+        try:
+            input_size = np.prod([*[dim for dim in layer.input_shape if dim != None]])
+            rate = layer_config["rate"]
+            return [input_size, rate], "dropout"
+        except:  # Ignore
+            return False
+    elif current_layer_type == "add":
+        try:
+            output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
+            return [output_size], "add"
+        except:  # Ignore
+            return False
+    elif current_layer_type == "multiply":
+        try:
+            output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
+            return [output_size], "multiply"
+        except:  # Ignore
+            return False
+    elif current_layer_type == "concatenate":
+        try:
+            output_size = np.prod([*[dim for dim in layer.output_shape if dim != None]])
+            return [output_size], "concatenate"
         except:  # Ignore
             return False
     return False
@@ -159,6 +225,14 @@ def get_layer_type(layer):
         return "pool"
     return ""
 
+def flatten_iterable(l):
+    import collections
+    for el in l:
+        if isinstance(el, collections.Iterable) and not isinstance(el, str):
+            for sub in flatten_iterable(el):
+                yield sub
+        else:
+            yield el
 
 def model_from_layer(layer):
     input_shape = layer.input_shape

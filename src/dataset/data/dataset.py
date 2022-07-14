@@ -43,9 +43,9 @@ class LayerWiseDatasetv1Small(Dataset):
         layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
                      'DepthwiseConv2D', 'Multiply', 'ReLU', 'Flatten', 'MaxPooling2D', 'Add', 'Conv2D', 'Normalization',
                      'Reshape', 'SeparableConv2D', 'InputLayer', 'Concatenate', 'Dense', 'Activation', 'Rescaling'}
-        dense_features = ["input_shape","output_shape","hidden_size", "num_flops"]
-        conv_features = ["input_shape","output_shape","filters", "kernel_size", "stride", "num_flops"]
-        pool_features = ["input_shape","output_shape","filters (default=1)", "pool_size", "stride", "num_flops"]
+        dense_features = ["input_size","output_size","hidden_size", "num_flops"]
+        conv_features = ["input_size","output_size","filters", "kernel_size", "stride", "num_flops"]
+        pool_features = ["input_size","output_size","filters (default=1)", "pool_size", "stride", "num_flops"]
         x = []
         y = []
         for model_index, row in self.data.iterrows():
@@ -226,6 +226,24 @@ class LayerWiseDatasetv2Large(Dataset):
         self.dataset_class = 'LayerWiseDatasetv2Large'
         self.file_path = kwargs['file_path']
         self.subset = kwargs['subset']
+        self.features = {
+            'dense': ["batch_size", "num_layer_total", "input_size", "output_size", "hidden_size"],
+            'conv': ["batch_size", "num_layer_total", "input_size", "output_size", "filters", "kernel_size", "stride"],
+            'pool': ["batch_size", "num_layer_total", "input_size", "output_size", "filters (default=1)", "pool_size", "stride"],
+            'inputlayer': ["batch_size", "num_layer_total", "input_size"],
+            'pad': ["batch_size", "num_layer_total", "input_size", "output_size", "padding"],
+            'normalization': ["batch_size", "num_layer_total", "input_size", "output_size"],
+            'activation': ["batch_size", "num_layer_total", "input_size"],
+            'rescaling': ["batch_size", "num_layer_total", "input_size"],
+            'reshape': ["batch_size", "num_layer_total", "input_size", "target_shape"],
+            'dropout': ["batch_size", "num_layer_total", "input_size", "rate"],
+            'add': ["batch_size", "num_layer_total", "output_size"],
+            'multiply': ["batch_size", "num_layer_total", "output_size"],
+            'concatenate': ["batch_size", "num_layer_total", "output_size"]
+        }
+        layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
+                     'DepthwiseConv2D', 'Multiply', 'ReLU', 'Flatten', 'MaxPooling2D', 'Add', 'Conv2D', 'Normalization',
+                     'Reshape', 'SeparableConv2D', 'InputLayer', 'Concatenate', 'Dense', 'Activation', 'Rescaling'}
         self.load_dataset(**kwargs)
         self.get_raw_splits(**kwargs)
         del self.raw_x, self.raw_y, self.y_modelwise
@@ -267,25 +285,26 @@ class LayerWiseDatasetv2Large(Dataset):
             power_model = row["result.power"]
             power_layerwise = ast.literal_eval(row["result.power_layerwise"])
             num_layer_base_model = len(model.layers[0].layers)
+            num_layer_total = len(model.layers) + num_layer_base_model - 1
             print(f"(get_raw_dataset)\tProcessing model {model_index}\tModel Name: {row['result.name']}\tNum Layers in Base Model: {num_layer_base_model}")
             for i, layer in enumerate(model.layers):
                 if i == 0:
                     for j, sublayer in enumerate(layer.layers):
                         layer_num = j
-                        layer_features = extract_layer_features(sublayer)
-                        if layer_features != False:
-                            layer_type = get_layer_type(sublayer)
+                        extract_layer_features_return = extract_layer_features(sublayer)
+                        if extract_layer_features_return != False:
+                            layer_features, layer_type = extract_layer_features_return
                             batch_size = row["config.batch_size"]
-                            layer_features = [layer_type, batch_size, *layer_features]
+                            layer_features = [layer_type, batch_size, num_layer_total, *layer_features]
                             current_model.append(layer_features)
                             current_y_layerwise.append(power_layerwise[layer_num])
                 else:
                     layer_num = num_layer_base_model + i - 1
-                    layer_features = extract_layer_features(layer)
-                    if layer_features != False:
-                        layer_type = get_layer_type(layer)
+                    extract_layer_features_return = extract_layer_features(layer)
+                    if extract_layer_features_return != False:
+                        layer_features, layer_type = extract_layer_features_return
                         batch_size = row["config.batch_size"]
-                        layer_features = [layer_type, batch_size, *layer_features]
+                        layer_features = [layer_type, batch_size, num_layer_total, *layer_features]
                         current_model.append(layer_features)
                         current_y_layerwise.append(power_layerwise[layer_num])
             if len(current_model) > 0:  # If any match for the corresponding layer is found on the current model
@@ -358,15 +377,15 @@ class LayerWiseDatasetv2Large(Dataset):
     def save_splits(self, *args, **kwargs):
         splits = {
             'train': (self.x_train, self.y_train),
-            'validation': (self.x_validation, self.y_validation),
             'test': (self.x_test, self.y_test)
         }
+        if kwargs['validation_split'] != False:
+            splits['validation'] = (self.x_validation, self.y_validation)
         for split in splits:
             x_split, y_split = splits[split]
-            with open(f"{self.dataset_class}-{self.subset}-{kwargs['target_layer']}-x_{split}.npy", 'wb') as f:
-                np.save(f, x_split)
-            with open(f"{self.dataset_class}-{self.subset}-{kwargs['target_layer']}-y_{split}.npy", 'wb') as f:
-                np.save(f, y_split)
+            df = pd.DataFrame(x_split, columns = self.features[kwargs['target_layer']])
+            df['energy_consumption'] = y_split
+            df.to_csv(f"{self.dataset_class}-{self.subset}-{kwargs['target_layer']}-{split}.csv")
 
 def split(x, y, split_ratio, shuffle, seed):
     '''
@@ -456,9 +475,9 @@ class ModelWiseDataset(Dataset):
 
 
     def prepare(self, **kwargs):
-        dense_features = ["input_shape","output_shape","units"]
-        conv_features = ["input_shape","output_shape","filters", "kernel_size", "stride"]
-        pool_features = ["input_shape","output_shape","filters (default=1)", "pool_size", "stride"]
+        dense_features = ["input_size","output_size","units"]
+        conv_features = ["input_size","output_size","filters", "kernel_size", "stride"]
+        pool_features = ["input_size","output_size","filters (default=1)", "pool_size", "stride"]
         # TODO: The power of kernel/pool size can be taken wrt the dim (2d/3d).
         x = []
         y = []
