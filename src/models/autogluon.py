@@ -5,20 +5,19 @@ from metrics import rmspe
 import pandas as pd
 
 features = {
-    'dense': ["batch_size", "num_layer_total", "input_size", "output_size", "hidden_size"],
-    'conv': ["batch_size", "num_layer_total", "input_size", "output_size", "filters", "kernel_size", "stride"],
-    'pool': ["batch_size", "num_layer_total", "input_size", "output_size", "filters (default=1)", "pool_size",
-             "stride"],
-    'inputlayer': ["batch_size", "num_layer_total", "input_size"],
-    'pad': ["batch_size", "num_layer_total", "input_size", "output_size", "padding"],
-    'normalization': ["batch_size", "num_layer_total", "input_size", "output_size"],
-    'activation': ["batch_size", "num_layer_total", "input_size"],
-    'rescaling': ["batch_size", "num_layer_total", "input_size"],
-    'reshape': ["batch_size", "num_layer_total", "input_size", "target_shape"],
-    'dropout': ["batch_size", "num_layer_total", "input_size", "rate"],
-    'add': ["batch_size", "num_layer_total", "output_size"],
-    'multiply': ["batch_size", "num_layer_total", "output_size"],
-    'concatenate': ["batch_size", "num_layer_total", "output_size"]
+    'dense': ["batch_size", "input_size", "output_size", "hidden_size"],
+    'conv': ["batch_size", "input_size", "output_size", "filters", "kernel_size", "stride"],
+    'pool': ["batch_size", "input_size", "output_size", "filters (default=1)", "pool_size", "stride"],
+    'inputlayer': ["batch_size", "input_size"],
+    'pad': ["batch_size", "input_size", "output_size", "padding"],
+    'normalization': ["batch_size", "input_size", "output_size"],
+    'activation': ["batch_size", "input_size"],
+    'rescaling': ["batch_size", "input_size"],
+    'reshape': ["batch_size", "input_size", "target_shape"],
+    'dropout': ["batch_size", "input_size", "rate"],
+    'add': ["batch_size", "output_size"],
+    'multiply': ["batch_size", "output_size"],
+    'concatenate': ["batch_size", "output_size"]
 }
 
 target_layers = list(features.keys())
@@ -35,7 +34,7 @@ for target_layer in target_layers:
     now = datetime.now() # current date and time
     timestamp = now.strftime("%m-%d-%Y--%H:%M:%S")
 
-    time_limit = 60 # TODO: Change the time limit for faster results.
+    time_limit = 600 # TODO: Change the time limit for faster results.
     presets='best_quality' # Available presets: [‘best_quality’, ‘high_quality’, ‘good_quality’, ‘medium_quality’]. Please use 'best_quality' if possible.
 
     train_data_path = f'/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/{dataset_class}-{subset}-{target_layer}-train.csv'

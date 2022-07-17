@@ -208,23 +208,6 @@ def pad_to_dense(M):
         Z[enu, :len(row)] += row
     return Z
 
-def get_layer_type(layer):
-    '''
-    Returns the type of layer from the layer object
-    Args:
-        layer: layer object
-
-    Returns: str
-
-    '''
-    if "dense" in layer.__class__.__name__.lower():
-        return "dense"
-    elif "conv" in layer.__class__.__name__.lower():
-        return "conv"
-    elif "pool" in layer.__class__.__name__.lower():
-        return "pool"
-    return ""
-
 def flatten_iterable(l):
     import collections
     for el in l:
@@ -240,6 +223,3 @@ def model_from_layer(layer):
     model.add(layer)
     model.build(input_shape=input_shape)
     return model
-
-
-

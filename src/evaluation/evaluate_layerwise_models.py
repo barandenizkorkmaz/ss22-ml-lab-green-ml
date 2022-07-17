@@ -8,22 +8,23 @@ from src.models.metrics import *
 yaml_path = '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/run_config_layerwise.yaml'
 config = yaml.safe_load(Path(yaml_path).read_text())
 
-method_name = "KNeighborsDist_BAG_L1" # Please enter the name of the model here that you want to use.
+method_name = "CatBoost_BAG_L1" # Please enter the name of the model here that you want to use.
+print(f"Method Name: {method_name}")
 
 model_paths = {
-    'dense': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:24:57-pretrained-dense',
-    'conv': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:26:12-pretrained-conv',
-    'pool': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:28:18-pretrained-pool',
-    'inputlayer': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:28:55-pretrained-inputlayer',
-    'pad': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:29:26-pretrained-pad',
-    'normalization': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:30:32-pretrained-normalization',
-    'activation': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:32:52-pretrained-activation',
-    'rescaling': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:34:31-pretrained-rescaling',
-    'reshape': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:35:01-pretrained-reshape',
-    'dropout': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:36:16-pretrained-dropout',
-    'add': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:37:26-pretrained-add',
-    'multiply': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:38:57-pretrained-multiply',
-    'concatenate': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--18:40:03-pretrained-concatenate'
+    'dense': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--20:02:57-pretrained-dense',
+    'conv': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--20:13:22-pretrained-conv',
+    'pool': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--20:25:44-pretrained-pool',
+    'inputlayer': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--20:34:56-pretrained-inputlayer',
+    'pad': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--20:44:07-pretrained-pad',
+    'normalization': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--20:52:57-pretrained-normalization',
+    'activation': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--21:04:11-pretrained-activation',
+    'rescaling': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--21:14:18-pretrained-rescaling',
+    'reshape': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--21:14:18-pretrained-rescaling',
+    'dropout': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--21:34:17-pretrained-dropout',
+    'add': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--21:42:21-pretrained-add',
+    'multiply': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--21:50:03-pretrained-multiply',
+    'concatenate': '/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/models/agModels-greenML-07-14-2022--21:59:37-pretrained-concatenate'
 } # TODO: Please add your models here manually.
 
 features = {
@@ -99,6 +100,7 @@ dataset_class_name = config['dataset_class']
 dataset = LayerWiseDatasetv2Large(**config[dataset_class_name]['params'])
 raw_x_test = dataset.raw_x_test
 raw_y_test = dataset.raw_y_test
+y_layerwise_true = np.array([sum(layerwise_consumption) for layerwise_consumption in raw_y_test]).flatten()
 y_modelwise_true = dataset.y_modelwise_test
 y_modelwise_predicted = list()
 print(f"Number of Models in Test Set: {len(raw_x_test)}")
@@ -152,13 +154,8 @@ for i, model in enumerate(raw_x_test):
         else:
             raise TypeError("Illegal layer type!")
     current_consumption = current_consumption * 1e-9
-    print(f"Predicted: {current_consumption}\tActual: {y_modelwise_true[i]}")
+    print(f"Predicted: {current_consumption}\tActual:\tSum Layer-Wise: {y_layerwise_true[i]}\tModel-Wise:{y_modelwise_true[i]}")
     y_modelwise_predicted.append(current_consumption)
-
-print(len(y_modelwise_predicted))
-print(len(y_modelwise_true))
-print(y_modelwise_predicted)
-print(y_modelwise_true)
 
 my_metrics = {
     'mae': mae,
@@ -168,8 +165,16 @@ my_metrics = {
     'r2': r2
 }
 
+print("### Model-Wise Results ###")
 loss_results = dict()
 for metric in my_metrics:
     loss_fn = my_metrics[metric]
     loss_results[metric] = loss_fn(np.array(y_modelwise_predicted),np.array(y_modelwise_true))
 print(loss_results)
+
+print("### Layer-Wise Results ###")
+loss_results_layerwise = dict()
+for metric in my_metrics:
+    loss_fn = my_metrics[metric]
+    loss_results_layerwise[metric] = loss_fn(np.array(y_modelwise_predicted),np.array(y_layerwise_true))
+print(loss_results_layerwise)

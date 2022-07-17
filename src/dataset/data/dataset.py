@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
 import ast
-from .utils import indexify, one_hotify, flatten, convert_shapes, extract_layer_features, pad_to_dense, get_layer_type
+from .utils import indexify, one_hotify, flatten, convert_shapes, extract_layer_features
 
 class LayerWiseDatasetv1Small(Dataset):
     def __init__(self, **kwargs):
@@ -102,8 +102,28 @@ class LayerWiseDatasetv1Small(Dataset):
 class LayerWiseDatasetv2Small(Dataset):
     def __init__(self, **kwargs):
         super().__init__()
+        self.dataset_class = 'LayerWiseDatasetv2Small'
         self.file_path = kwargs['file_path']
         self.subset = kwargs['subset']
+        self.features = {
+            'dense': ["batch_size", "input_size", "output_size", "hidden_size"],
+            'conv': ["batch_size", "input_size", "output_size", "filters", "kernel_size", "stride"],
+            'pool': ["batch_size", "input_size", "output_size", "filters (default=1)", "pool_size", "stride"],
+            'inputlayer': ["batch_size", "input_size"],
+            'pad': ["batch_size", "input_size", "output_size", "padding"],
+            'normalization': ["batch_size", "input_size", "output_size"],
+            'activation': ["batch_size", "input_size"],
+            'rescaling': ["batch_size", "input_size"],
+            'reshape': ["batch_size", "input_size", "target_shape"],
+            'dropout': ["batch_size", "input_size", "rate"],
+            'add': ["batch_size", "output_size"],
+            'multiply': ["batch_size", "output_size"],
+            'concatenate': ["batch_size", "output_size"]
+        }
+        layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
+                     'DepthwiseConv2D', 'Multiply', 'ReLU', 'Flatten', 'MaxPooling2D', 'Add', 'Conv2D', 'Normalization',
+                     'Reshape', 'SeparableConv2D', 'InputLayer', 'Concatenate', 'Dense', 'Activation', 'Rescaling'}
+
         self.load_dataset(**kwargs)
         self.get_raw_splits(**kwargs)
         del self.raw_x, self.raw_y, self.y_modelwise
@@ -113,6 +133,8 @@ class LayerWiseDatasetv2Small(Dataset):
         if kwargs['validation_split']:
             self.x_validation, self.y_validation = self.raw_split_to_training_split(self.raw_x_val, self.raw_y_val,**kwargs)
             del self.raw_x_val, self.raw_y_val, self.y_modelwise_val
+        if kwargs['save_splits']:
+            self.save_splits(**kwargs)
 
     def load_dataset(self, **kwargs):
         if kwargs['load_dataset'] and (os.path.isfile(kwargs['dataset_path_raw_x']) and os.path.isfile(kwargs['dataset_path_raw_y']) and os.path.isfile(kwargs['dataset_path_y_modelwise'])):
@@ -144,13 +166,14 @@ class LayerWiseDatasetv2Small(Dataset):
             power_model = row["result.power"]
             power_layerwise = ast.literal_eval(row["result.power_layerwise"])
             for layer, power_layer in zip(model.layers, power_layerwise):
-                layer_features = extract_layer_features(layer)
-                if layer_features != False:
-                    layer_type = get_layer_type(layer)
+                extract_layer_features_return = extract_layer_features(layer)
+                if extract_layer_features_return != False:
+                    layer_features, layer_type = extract_layer_features_return
                     if "config.batch_size" in self.data:
                         batch_size = row["config.batch_size"]
-                        layer_features.insert(0, batch_size)
-                    layer_features.insert(0, layer_type)
+                        layer_features = [layer_type, batch_size, *layer_features]
+                    else:
+                        layer_features = [layer_type, *layer_features]
                     current_model.append(layer_features)
                     current_y_layerwise.append(power_layer)
             if len(current_model) > 0:  # If any match for the corresponding layer is found on the current model
@@ -213,12 +236,25 @@ class LayerWiseDatasetv2Small(Dataset):
         Saves the entire dataset. i.e. x and y
         """
         import pickle
-        with open(f'LayerWiseDatasetv2Small-{self.subset}-raw_x.pkl', 'wb') as f:
+        with open(f'{self.dataset_class}-{self.subset}-raw_x.pkl', 'wb') as f:
             pickle.dump(self.raw_x, f)
-        with open(f'LayerWiseDatasetv2Small-{self.subset}-raw_y.pkl', 'wb') as f:
+        with open(f'{self.dataset_class}-{self.subset}-raw_y.pkl', 'wb') as f:
             pickle.dump(self.raw_y, f)
-        with open(f'LayerWiseDatasetv2Small-{self.subset}-y_modelwise.pkl', 'wb') as f:
+        with open(f'{self.dataset_class}-{self.subset}-y_modelwise.pkl', 'wb') as f:
             pickle.dump(self.y_modelwise, f)
+
+    def save_splits(self, *args, **kwargs):
+        splits = {
+            'train': (self.x_train, self.y_train),
+            'test': (self.x_test, self.y_test)
+        }
+        if kwargs['validation_split'] != False:
+            splits['validation'] = (self.x_validation, self.y_validation)
+        for split in splits:
+            x_split, y_split = splits[split]
+            df = pd.DataFrame(x_split, columns = self.features[kwargs['target_layer']])
+            df['energy_consumption'] = y_split
+            df.to_csv(f"{self.dataset_class}-{self.subset}-{kwargs['target_layer']}-{split}.csv")
 
 class LayerWiseDatasetv2Large(Dataset):
     def __init__(self, **kwargs):
@@ -227,19 +263,19 @@ class LayerWiseDatasetv2Large(Dataset):
         self.file_path = kwargs['file_path']
         self.subset = kwargs['subset']
         self.features = {
-            'dense': ["batch_size", "num_layer_total", "input_size", "output_size", "hidden_size"],
-            'conv': ["batch_size", "num_layer_total", "input_size", "output_size", "filters", "kernel_size", "stride"],
-            'pool': ["batch_size", "num_layer_total", "input_size", "output_size", "filters (default=1)", "pool_size", "stride"],
-            'inputlayer': ["batch_size", "num_layer_total", "input_size"],
-            'pad': ["batch_size", "num_layer_total", "input_size", "output_size", "padding"],
-            'normalization': ["batch_size", "num_layer_total", "input_size", "output_size"],
-            'activation': ["batch_size", "num_layer_total", "input_size"],
-            'rescaling': ["batch_size", "num_layer_total", "input_size"],
-            'reshape': ["batch_size", "num_layer_total", "input_size", "target_shape"],
-            'dropout': ["batch_size", "num_layer_total", "input_size", "rate"],
-            'add': ["batch_size", "num_layer_total", "output_size"],
-            'multiply': ["batch_size", "num_layer_total", "output_size"],
-            'concatenate': ["batch_size", "num_layer_total", "output_size"]
+            'dense': ["batch_size", "input_size", "output_size", "hidden_size"],
+            'conv': ["batch_size", "input_size", "output_size", "filters", "kernel_size", "stride"],
+            'pool': ["batch_size", "input_size", "output_size", "filters (default=1)", "pool_size", "stride"],
+            'inputlayer': ["batch_size", "input_size"],
+            'pad': ["batch_size", "input_size", "output_size", "padding"],
+            'normalization': ["batch_size", "input_size", "output_size"],
+            'activation': ["batch_size", "input_size"],
+            'rescaling': ["batch_size", "input_size"],
+            'reshape': ["batch_size", "input_size", "target_shape"],
+            'dropout': ["batch_size", "input_size", "rate"],
+            'add': ["batch_size", "output_size"],
+            'multiply': ["batch_size", "output_size"],
+            'concatenate': ["batch_size", "output_size"]
         }
         layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
                      'DepthwiseConv2D', 'Multiply', 'ReLU', 'Flatten', 'MaxPooling2D', 'Add', 'Conv2D', 'Normalization',
@@ -295,7 +331,7 @@ class LayerWiseDatasetv2Large(Dataset):
                         if extract_layer_features_return != False:
                             layer_features, layer_type = extract_layer_features_return
                             batch_size = row["config.batch_size"]
-                            layer_features = [layer_type, batch_size, num_layer_total, *layer_features]
+                            layer_features = [layer_type, batch_size, *layer_features]
                             current_model.append(layer_features)
                             current_y_layerwise.append(power_layerwise[layer_num])
                 else:
@@ -304,7 +340,7 @@ class LayerWiseDatasetv2Large(Dataset):
                     if extract_layer_features_return != False:
                         layer_features, layer_type = extract_layer_features_return
                         batch_size = row["config.batch_size"]
-                        layer_features = [layer_type, batch_size, num_layer_total, *layer_features]
+                        layer_features = [layer_type, batch_size, *layer_features]
                         current_model.append(layer_features)
                         current_y_layerwise.append(power_layerwise[layer_num])
             if len(current_model) > 0:  # If any match for the corresponding layer is found on the current model
@@ -367,11 +403,11 @@ class LayerWiseDatasetv2Large(Dataset):
         Saves the entire dataset. i.e. x and y
         """
         import pickle
-        with open(f'LayerWiseDatasetv2Large-raw_x.pkl', 'wb') as f:
+        with open(f'{self.dataset_class}-{self.subset}-raw_x.pkl', 'wb') as f:
             pickle.dump(self.raw_x, f)
-        with open(f'LayerWiseDatasetv2Large-raw_y.pkl', 'wb') as f:
+        with open(f'{self.dataset_class}-{self.subset}-raw_y.pkl', 'wb') as f:
             pickle.dump(self.raw_y, f)
-        with open(f'LayerWiseDatasetv2Large-y_modelwise.pkl', 'wb') as f:
+        with open(f'{self.dataset_class}-{self.subset}-y_modelwise.pkl', 'wb') as f:
             pickle.dump(self.y_modelwise, f)
 
     def save_splits(self, *args, **kwargs):

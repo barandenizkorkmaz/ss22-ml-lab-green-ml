@@ -1,4 +1,4 @@
-dataset_class: LayerWiseDatasetv2Large # TODO: Needs to be set manually to the key for the dataset.
+dataset_class: LayerWiseDatasetv2Small # TODO: Needs to be set manually to the key for the dataset.
 
 LayerWiseDatasetv1Small: # Here key for the dataset is LayerWiseDataset.
   module: src.dataset.data.dataset
@@ -19,13 +19,14 @@ LayerWiseDatasetv2Small:
   params:
     file_path: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/dataset/datasets/dataset_v1_gpu.csv
     subset: pretrained
-    target_layer: dense
+    target_layer: pool
     validation_split: False
     test_split: 0.2
     load_dataset: True
     dataset_path_raw_x: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Small-pretrained-raw_x.pkl
     dataset_path_raw_y: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Small-pretrained-raw_y.pkl
     dataset_path_y_modelwise: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Small-pretrained-y_modelwise.pkl
+    save_splits: True
 
 LayerWiseDatasetv2Large:
   module: src.dataset.data.dataset
@@ -37,9 +38,9 @@ LayerWiseDatasetv2Large:
     validation_split: False # Please keep as False for autogluon experiments.
     test_split: 0.2 # Please keep as 0.2 for autogluon experiments.
     load_dataset: True
-    dataset_path_raw_x: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-raw_x.pkl
-    dataset_path_raw_y: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-raw_y.pkl
-    dataset_path_y_modelwise: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-y_modelwise.pkl
+    dataset_path_raw_x: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-pretrained-raw_x.pkl
+    dataset_path_raw_y: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-pretrained-raw_y.pkl
+    dataset_path_y_modelwise: /home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/LayerWiseDatasetv2Large-pretrained-y_modelwise.pkl
     save_splits: True
 
 ModelWiseDataset:
