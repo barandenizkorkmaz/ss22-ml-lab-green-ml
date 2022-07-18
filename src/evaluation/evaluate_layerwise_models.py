@@ -1,5 +1,5 @@
 from autogluon.tabular import TabularPredictor
-from src.dataset.data.dataset import LayerWiseDatasetv2Large
+from src.dataset.data.dataset import LayerWiseDatasetv2Large, LayerWiseDatasetv2Small
 import yaml
 from pathlib import Path
 import pandas as pd
@@ -97,7 +97,7 @@ model_concatenate = predictor_concatenate.get_model_names()[method_index]
 
 
 dataset_class_name = config['dataset_class']
-dataset = LayerWiseDatasetv2Large(**config[dataset_class_name]['params'])
+dataset = LayerWiseDatasetv2Small(**config[dataset_class_name]['params'])
 raw_x_test = dataset.raw_x_test
 raw_y_test = dataset.raw_y_test
 y_layerwise_true = np.array([sum(layerwise_consumption) for layerwise_consumption in raw_y_test]).flatten()
@@ -169,12 +169,12 @@ print("### Model-Wise Results ###")
 loss_results = dict()
 for metric in my_metrics:
     loss_fn = my_metrics[metric]
-    loss_results[metric] = loss_fn(np.array(y_modelwise_predicted),np.array(y_modelwise_true))
+    loss_results[metric] = loss_fn(np.array(y_modelwise_true), np.array(y_modelwise_predicted))
 print(loss_results)
 
 print("### Layer-Wise Results ###")
 loss_results_layerwise = dict()
 for metric in my_metrics:
     loss_fn = my_metrics[metric]
-    loss_results_layerwise[metric] = loss_fn(np.array(y_modelwise_predicted),np.array(y_layerwise_true))
+    loss_results_layerwise[metric] = loss_fn(np.array(y_layerwise_true), np.array(y_modelwise_predicted))
 print(loss_results_layerwise)
