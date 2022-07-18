@@ -8,97 +8,6 @@ from sklearn.model_selection import train_test_split
 import ast
 from .utils import indexify, one_hotify, flatten, convert_shapes, extract_layer_features
 
-class LayerWiseDatasetv1Small(Dataset):
-    def __init__(self, **kwargs):
-        super().__init__()
-        self.file_path = kwargs['file_path']
-        self.subset = kwargs['subset']
-        self.target_layer = kwargs['target_layer']
-        self.load_dataset(**kwargs)
-        # Data Preprocessing - The class function preprocessing by the user's preferences...
-        self.x, self.y = self.preprocessing(self.x, self.y)
-        self.create_splits(**kwargs)
-        del self.x, self.y
-
-    def load_csv(self):
-        raw_data = pd.read_csv(self.file_path)
-        if self.subset == 'all':  # do nothing
-            self.data = raw_data
-        else:  # Options for subset are ['pretrained', 'simple'].
-            self.data = raw_data.loc[raw_data['result.type'] == self.subset]
-
-    def load_dataset(self, **kwargs):
-        if kwargs['load_dataset'] and (os.path.isfile(kwargs['dataset_path_x']) and os.path.isfile(kwargs['dataset_path_y'])):
-            self.load(**kwargs)
-            print("Load_dataset successful!")
-        else:
-            print("Load_dataset failed. Preparing the dataset from the scratch.")
-            self.load_csv()
-            self.x, self.y = self.prepare(**kwargs)
-            del self.data
-            self.save()
-
-    def prepare(self, **kwargs):
-        target_layer = kwargs['target_layer']
-        layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
-                     'DepthwiseConv2D', 'Multiply', 'ReLU', 'Flatten', 'MaxPooling2D', 'Add', 'Conv2D', 'Normalization',
-                     'Reshape', 'SeparableConv2D', 'InputLayer', 'Concatenate', 'Dense', 'Activation', 'Rescaling'}
-        dense_features = ["input_size","output_size","hidden_size", "num_flops"]
-        conv_features = ["input_size","output_size","filters", "kernel_size", "stride", "num_flops"]
-        pool_features = ["input_size","output_size","filters (default=1)", "pool_size", "stride", "num_flops"]
-        x = []
-        y = []
-        for model_index, row in self.data.iterrows():
-            print(f"Processing model {model_index}")
-            model = tf.keras.models.model_from_json(row['result.model'])
-            power_layerwise = ast.literal_eval(row["result.power_layerwise"])
-            for layer, power in zip(model.layers, power_layerwise):
-                if target_layer in layer.__class__.__name__.lower():
-                    layer_features = extract_layer_features(layer)
-                    if layer_features != False:
-                        if "config.batch_size" in self.data:
-                            batch_size = row["config.batch_size"]
-                            layer_features.insert(0, batch_size)
-                        x.append(layer_features)
-                        y.append(power)
-        x = np.array(x, dtype=np.uint16)
-        y = np.array(y, dtype=float)
-        print(f"(prepare)\tShape of X: {x.shape}\tShape of Y: {y.shape}")
-        return x, y
-
-    def preprocessing(self, x, y):
-        if type(y) is list:
-            y = [tmp*1e9 for tmp in y]
-        else:
-            y = y * 1e9
-        #y = np.abs(y)  # Take abs due to issues with CodeCarbon
-        #y = (y - np.min(y)) / (np.max(y) - np.min(y))  # Normalize
-        return x, y
-
-    def create_splits(self, *args, **kwargs):
-        validation_split = kwargs['validation_split']
-        test_split = kwargs['test_split']
-        self.x_train, self.x_test, self.y_train, self.y_test = split(self.x, self.y, split_ratio=test_split, shuffle=True, seed=123)
-        if validation_split != False:
-            self.x_train, self.x_validation, self.y_train, self.y_validation = split(self.x_train, self.y_train, split_ratio=validation_split, shuffle=False, seed=None)
-
-    def load(self, *args, **kwargs):
-        dataset_path_x = kwargs['dataset_path_x']
-        dataset_path_y = kwargs['dataset_path_y']
-        with open(dataset_path_x, 'rb') as f:
-            self.x = np.load(f)
-        with open(dataset_path_y, 'rb') as f:
-            self.y = np.load(f)
-
-    def save(self):
-        """
-        Saves the entire dataset. i.e. x and y
-        """
-        with open(f'LayerWiseDatasetv1Small-{self.subset}-{self.target_layer}-x.npy', 'wb') as f:
-            np.save(f, self.x)
-        with open(f'LayerWiseDatasetv1Small-{self.subset}-{self.target_layer}-y.npy', 'wb') as f:
-            np.save(f, self.y)
-
 class LayerWiseDatasetv2Small(Dataset):
     def __init__(self, **kwargs):
         super().__init__()
@@ -106,19 +15,19 @@ class LayerWiseDatasetv2Small(Dataset):
         self.file_path = kwargs['file_path']
         self.subset = kwargs['subset']
         self.features = {
-            'dense': ["batch_size", "input_size", "output_size", "hidden_size"],
-            'conv': ["batch_size", "input_size", "output_size", "filters", "kernel_size", "stride"],
-            'pool': ["batch_size", "input_size", "output_size", "filters (default=1)", "pool_size", "stride"],
-            'inputlayer': ["batch_size", "input_size"],
-            'pad': ["batch_size", "input_size", "output_size", "padding"],
-            'normalization': ["batch_size", "input_size", "output_size"],
-            'activation': ["batch_size", "input_size"],
-            'rescaling': ["batch_size", "input_size"],
-            'reshape': ["batch_size", "input_size", "target_shape"],
-            'dropout': ["batch_size", "input_size", "rate"],
-            'add': ["batch_size", "output_size"],
-            'multiply': ["batch_size", "output_size"],
-            'concatenate': ["batch_size", "output_size"]
+            'dense': ["batch_size", "num_layer_total", "input_size", "output_size", "hidden_size"],
+            'conv': ["batch_size", "num_layer_total", "input_size", "output_size", "filters", "kernel_size", "stride"],
+            'pool': ["batch_size", "num_layer_total", "input_size", "output_size", "filters (default=1)", "pool_size", "stride"],
+            'inputlayer': ["batch_size", "num_layer_total", "input_size"],
+            'pad': ["batch_size", "num_layer_total", "input_size", "output_size", "padding"],
+            'normalization': ["batch_size", "num_layer_total", "input_size", "output_size"],
+            'activation': ["batch_size", "num_layer_total", "input_size"],
+            'rescaling': ["batch_size", "num_layer_total", "input_size"],
+            'reshape': ["batch_size", "num_layer_total", "input_size", "target_shape"],
+            'dropout': ["batch_size", "num_layer_total", "input_size", "rate"],
+            'add': ["batch_size", "num_layer_total", "output_size"],
+            'multiply': ["batch_size", "num_layer_total", "output_size"],
+            'concatenate': ["batch_size", "num_layer_total", "output_size"]
         }
         layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
                      'DepthwiseConv2D', 'Multiply', 'ReLU', 'Flatten', 'MaxPooling2D', 'Add', 'Conv2D', 'Normalization',
@@ -163,6 +72,7 @@ class LayerWiseDatasetv2Small(Dataset):
             current_model = []
             current_y_layerwise = []
             model = tf.keras.models.model_from_json(row['result.model'])
+            num_layer_total = len(model.layers)
             power_model = row["result.power"]
             power_layerwise = ast.literal_eval(row["result.power_layerwise"])
             for layer, power_layer in zip(model.layers, power_layerwise):
@@ -171,9 +81,9 @@ class LayerWiseDatasetv2Small(Dataset):
                     layer_features, layer_type = extract_layer_features_return
                     if "config.batch_size" in self.data:
                         batch_size = row["config.batch_size"]
-                        layer_features = [layer_type, batch_size, *layer_features]
+                        layer_features = [layer_type, batch_size, num_layer_total, *layer_features]
                     else:
-                        layer_features = [layer_type, *layer_features]
+                        layer_features = [layer_type, num_layer_total, *layer_features]
                     current_model.append(layer_features)
                     current_y_layerwise.append(power_layer)
             if len(current_model) > 0:  # If any match for the corresponding layer is found on the current model
@@ -263,19 +173,20 @@ class LayerWiseDatasetv2Large(Dataset):
         self.file_path = kwargs['file_path']
         self.subset = kwargs['subset']
         self.features = {
-            'dense': ["batch_size", "input_size", "output_size", "hidden_size"],
-            'conv': ["batch_size", "input_size", "output_size", "filters", "kernel_size", "stride"],
-            'pool': ["batch_size", "input_size", "output_size", "filters (default=1)", "pool_size", "stride"],
-            'inputlayer': ["batch_size", "input_size"],
-            'pad': ["batch_size", "input_size", "output_size", "padding"],
-            'normalization': ["batch_size", "input_size", "output_size"],
-            'activation': ["batch_size", "input_size"],
-            'rescaling': ["batch_size", "input_size"],
-            'reshape': ["batch_size", "input_size", "target_shape"],
-            'dropout': ["batch_size", "input_size", "rate"],
-            'add': ["batch_size", "output_size"],
-            'multiply': ["batch_size", "output_size"],
-            'concatenate': ["batch_size", "output_size"]
+            'dense': ["batch_size", "num_layer_total", "input_size", "output_size", "hidden_size"],
+            'conv': ["batch_size", "num_layer_total", "input_size", "output_size", "filters", "kernel_size", "stride"],
+            'pool': ["batch_size", "num_layer_total", "input_size", "output_size", "filters (default=1)", "pool_size",
+                     "stride"],
+            'inputlayer': ["batch_size", "num_layer_total", "input_size"],
+            'pad': ["batch_size", "num_layer_total", "input_size", "output_size", "padding"],
+            'normalization': ["batch_size", "num_layer_total", "input_size", "output_size"],
+            'activation': ["batch_size", "num_layer_total", "input_size"],
+            'rescaling': ["batch_size", "num_layer_total", "input_size"],
+            'reshape': ["batch_size", "num_layer_total", "input_size", "target_shape"],
+            'dropout': ["batch_size", "num_layer_total", "input_size", "rate"],
+            'add': ["batch_size", "num_layer_total", "output_size"],
+            'multiply': ["batch_size", "num_layer_total", "output_size"],
+            'concatenate': ["batch_size", "num_layer_total", "output_size"]
         }
         layer_set = {'GlobalAveragePooling2D', 'ZeroPadding2D', 'BatchNormalization', 'AveragePooling2D', 'Dropout',
                      'DepthwiseConv2D', 'Multiply', 'ReLU', 'Flatten', 'MaxPooling2D', 'Add', 'Conv2D', 'Normalization',
@@ -331,7 +242,7 @@ class LayerWiseDatasetv2Large(Dataset):
                         if extract_layer_features_return != False:
                             layer_features, layer_type = extract_layer_features_return
                             batch_size = row["config.batch_size"]
-                            layer_features = [layer_type, batch_size, *layer_features]
+                            layer_features = [layer_type, batch_size, num_layer_total, *layer_features]
                             current_model.append(layer_features)
                             current_y_layerwise.append(power_layerwise[layer_num])
                 else:
@@ -340,7 +251,7 @@ class LayerWiseDatasetv2Large(Dataset):
                     if extract_layer_features_return != False:
                         layer_features, layer_type = extract_layer_features_return
                         batch_size = row["config.batch_size"]
-                        layer_features = [layer_type, batch_size, *layer_features]
+                        layer_features = [layer_type, batch_size, num_layer_total, *layer_features]
                         current_model.append(layer_features)
                         current_y_layerwise.append(power_layerwise[layer_num])
             if len(current_model) > 0:  # If any match for the corresponding layer is found on the current model
@@ -378,10 +289,7 @@ class LayerWiseDatasetv2Large(Dataset):
         return tmp_x, tmp_y
 
     def preprocessing(self, x, y):
-        if type(y) is list:
-            y = [tmp*1e9 for tmp in y]
-        else:
-            y = y * 1e9
+        y = y * 1e9
         #y = np.abs(y)  # Take abs due to issues with CodeCarbon
         #y = (y - np.min(y)) / (np.max(y) - np.min(y))  # Normalize
         return x, y

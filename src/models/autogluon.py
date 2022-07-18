@@ -5,19 +5,19 @@ from metrics import rmspe
 import pandas as pd
 
 features = {
-    'dense': ["batch_size", "input_size", "output_size", "hidden_size"],
-    'conv': ["batch_size", "input_size", "output_size", "filters", "kernel_size", "stride"],
-    'pool': ["batch_size", "input_size", "output_size", "filters (default=1)", "pool_size", "stride"],
-    'inputlayer': ["batch_size", "input_size"],
-    'pad': ["batch_size", "input_size", "output_size", "padding"],
-    'normalization': ["batch_size", "input_size", "output_size"],
-    'activation': ["batch_size", "input_size"],
-    'rescaling': ["batch_size", "input_size"],
-    'reshape': ["batch_size", "input_size", "target_shape"],
-    'dropout': ["batch_size", "input_size", "rate"],
-    'add': ["batch_size", "output_size"],
-    'multiply': ["batch_size", "output_size"],
-    'concatenate': ["batch_size", "output_size"]
+    'dense': ["batch_size", "num_layer_total", "input_size", "output_size", "hidden_size"],
+    'conv': ["batch_size", "num_layer_total", "input_size", "output_size", "filters", "kernel_size", "stride"],
+    'pool': ["batch_size", "num_layer_total", "input_size", "output_size", "filters (default=1)", "pool_size", "stride"],
+    'inputlayer': ["batch_size", "num_layer_total", "input_size"],
+    'pad': ["batch_size", "num_layer_total", "input_size", "output_size", "padding"],
+    'normalization': ["batch_size", "num_layer_total", "input_size", "output_size"],
+    'activation': ["batch_size", "num_layer_total", "input_size"],
+    'rescaling': ["batch_size", "num_layer_total", "input_size"],
+    'reshape': ["batch_size", "num_layer_total", "input_size", "target_shape"],
+    'dropout': ["batch_size", "num_layer_total", "input_size", "rate"],
+    'add': ["batch_size", "num_layer_total", "output_size"],
+    'multiply': ["batch_size", "num_layer_total", "output_size"],
+    'concatenate': ["batch_size", "num_layer_total", "output_size"]
 }
 
 target_layers = list(features.keys())
