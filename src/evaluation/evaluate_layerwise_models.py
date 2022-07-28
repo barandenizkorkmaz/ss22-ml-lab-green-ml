@@ -1,3 +1,8 @@
+"""
+This scripts evaluates the performance of a layer-wise model trained by AutoGluon on predicting the overall power
+consumption of a model.
+"""
+
 from autogluon.tabular import TabularPredictor
 from src.dataset.data.dataset import LayerWiseDatasetv2Large, LayerWiseDatasetv2Small
 import yaml

@@ -1,9 +1,14 @@
+"""
+This script runs the automated trainings by AutoGluon for each layer type available in the dataset.
+"""
+
 from autogluon.tabular import TabularDataset, TabularPredictor
 from datetime import datetime
 from autogluon.core.metrics import make_scorer
 from metrics import rmspe
 import pandas as pd
 
+# The set of features for each layer type.
 features = {
     'dense': ["batch_size", "num_layer_total", "input_size", "output_size", "hidden_size"],
     'conv': ["batch_size", "num_layer_total", "input_size", "output_size", "filters", "kernel_size", "stride"],
@@ -37,25 +42,32 @@ for target_layer in target_layers:
     time_limit = 600 # TODO: Change the time limit for faster results.
     presets='best_quality' # Available presets: [‘best_quality’, ‘high_quality’, ‘good_quality’, ‘medium_quality’]. Please use 'best_quality' if possible.
 
+    # Path to the training and test sets.
     train_data_path = f'/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/{dataset_class}-{subset}-{target_layer}-train.csv'
     test_data_path = f'/home/denizkorkmaz/PycharmProjects/TUM/SS22/green-ml-daml/src/{dataset_class}-{subset}-{target_layer}-test.csv'
 
+    # Read the training set.
     train_data = pd.read_csv(train_data_path, index_col=0)
     train_data = TabularDataset(train_data)
     print(train_data.head())
 
+    # Specify the target label.
     label = 'energy_consumption'
     print("Summary of class variable: \n", train_data[label].describe())
 
     save_path = f'agModels-greenML-{timestamp}-{subset}-{target_layer}'  # specifies folder to store trained models
+
+    # Train the models.
     predictor = TabularPredictor(label=label, path=save_path).fit(train_data, time_limit=time_limit, presets=presets)
 
+    # Read the test set.
     test_data = pd.read_csv(train_data_path, index_col=0)
     test_data = TabularDataset(test_data)
     y_test = test_data[label]  # values to predict
     test_data_nolab = test_data.drop(columns=[label])  # delete label column to prove we're not cheating
     test_data_nolab.head()
 
+    # Evaluate on the test set.
     y_pred = predictor.predict(test_data_nolab)
     print("Predictions:  \n", y_pred)
     perf = predictor.evaluate_predictions(y_true=y_test, y_pred=y_pred, auxiliary_metrics=True)

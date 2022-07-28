@@ -4,6 +4,9 @@ from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import PolynomialFeatures
 
 class PolynomialRegression(Network):
+    """
+    Implementation of polynomial regressor network.
+    """
     def __init__(self, *args, **kwargs):
         super().__init__()
         self.degree = kwargs['degree']

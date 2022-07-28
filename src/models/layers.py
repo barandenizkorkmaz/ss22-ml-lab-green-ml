@@ -3,6 +3,9 @@ from tensorflow import keras
 from tensorflow.keras import layers
 
 class GatedLinearUnit(layers.Layer):
+    """
+    GLU Implmentation for the GRU Net.
+    """
     def __init__(self, units):
         super(GatedLinearUnit, self).__init__()
         self.linear = layers.Dense(units)
@@ -12,6 +15,9 @@ class GatedLinearUnit(layers.Layer):
         return self.linear(inputs) * self.sigmoid(inputs)
 
 class GatedResidualNetwork(layers.Layer):
+    """
+    Gated Residual Network implementation.
+    """
     def __init__(self, units, dropout_rate):
         super(GatedResidualNetwork, self).__init__()
         self.units = units

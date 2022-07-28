@@ -1,3 +1,5 @@
+# This script contains the layer-wise neural network architectures.
+
 from .base_network import Network
 from .layers import *
 

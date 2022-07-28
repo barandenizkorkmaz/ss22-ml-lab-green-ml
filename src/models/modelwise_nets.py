@@ -1,3 +1,5 @@
+# This script contains the model-wise methods.
+
 import numpy as np
 import tensorflow as tf
 from .base_network import Network

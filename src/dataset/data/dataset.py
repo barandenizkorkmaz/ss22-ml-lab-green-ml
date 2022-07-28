@@ -9,6 +9,9 @@ import ast
 from .utils import indexify, one_hotify, flatten, convert_shapes, extract_layer_features
 
 class LayerWiseDatasetv2Small(Dataset):
+    """
+    Model-aware layer-wise dataset class for the small version of the dataset.
+    """
     def __init__(self, **kwargs):
         super().__init__()
         self.dataset_class = 'LayerWiseDatasetv2Small'
@@ -46,6 +49,11 @@ class LayerWiseDatasetv2Small(Dataset):
             self.save_splits(**kwargs)
 
     def load_dataset(self, **kwargs):
+        """
+        Loads the previously saved raw dataset files or creates the raw datasets from scratch and saves them. The raw
+        dataset means that the model entities form a dataset and each entity consists of the layers with extracted features
+        as a sequence of lists.
+        """
         if kwargs['load_dataset'] and (os.path.isfile(kwargs['dataset_path_raw_x']) and os.path.isfile(kwargs['dataset_path_raw_y']) and os.path.isfile(kwargs['dataset_path_y_modelwise'])):
             self.load(**kwargs)
             print("Load_dataset successful!")
@@ -57,6 +65,9 @@ class LayerWiseDatasetv2Small(Dataset):
             self.save()
 
     def load_csv(self):
+        """
+        Loads the initial form of the dataset from the csv.
+        """
         raw_data = pd.read_csv(self.file_path)
         if self.subset == 'all':  # do nothing
             self.data = raw_data
@@ -64,6 +75,24 @@ class LayerWiseDatasetv2Small(Dataset):
             self.data = raw_data.loc[raw_data['result.type'] == self.subset]
 
     def get_raw_dataset(self, **kwargs):
+        """
+        Creates the raw dataset.
+
+            raw_x : [
+                [layer1_1, layer1_2, ..., layer1_m],
+                [layer2_1, layer2_2, ..., layer2_n],
+                ...
+                [layerN_1, layerN_2, ..., layerN_z]
+            ] where each layer is a list of extracted features.
+            raw_y: [
+                [y_1_1, y_1_2, ..., y_1_m],
+                [y_2_1, y_2_2, ..., y_2_n],
+                ...
+                [y_N_1, y_N_2, ..., y_N_z]
+            ]
+            y_modelwise: [Y_1, Y_2, ..., Y_N]
+
+        """
         x = []
         y_layerwise = []
         y_modelwise = []
@@ -94,6 +123,9 @@ class LayerWiseDatasetv2Small(Dataset):
         return x, y_layerwise, y_modelwise
 
     def get_raw_splits(self, **kwargs):
+        """
+        Splits the raw dataset into training, validation, and test sets without changing the format.
+        """
         x, y, y_modelwise = shuffle_iterables(True, 123, self.raw_x, self.raw_y, self.y_modelwise)
         self.raw_x_train, self.raw_x_test = split_2(x, split_ratio=kwargs['test_split'])
         self.raw_y_train, self.raw_y_test = split_2(y, split_ratio=kwargs['test_split'])
@@ -106,6 +138,10 @@ class LayerWiseDatasetv2Small(Dataset):
             self.raw_x_val, self.raw_y_val, self.y_modelwise_val = None, None, None
 
     def raw_split_to_training_split(self, raw_x_split, raw_y_split, **kwargs):
+        """
+        Converts a raw training/validation/test split into the form ready for training in a way that x contains the
+        layer instances and y contains corresponding power consumption values.
+        """
         target_layer = kwargs['target_layer']
         tmp_x = []
         tmp_y = []
@@ -121,6 +157,9 @@ class LayerWiseDatasetv2Small(Dataset):
         return tmp_x, tmp_y
 
     def preprocessing(self, x, y):
+        """
+        Preprocessing of the dataset.
+        """
         if type(y) is list:
             y = [tmp*1e9 for tmp in y]
         else:
@@ -130,6 +169,9 @@ class LayerWiseDatasetv2Small(Dataset):
         return x, y
 
     def load(self, *args, **kwargs):
+        """
+        Loads the raw dataset.
+        """
         import pickle
         dataset_path_raw_x = kwargs['dataset_path_raw_x']
         dataset_path_raw_y = kwargs['dataset_path_raw_y']
@@ -143,7 +185,7 @@ class LayerWiseDatasetv2Small(Dataset):
 
     def save(self):
         """
-        Saves the entire dataset. i.e. x and y
+        Saves the raw dataset.
         """
         import pickle
         with open(f'{self.dataset_class}-{self.subset}-raw_x.pkl', 'wb') as f:
@@ -154,6 +196,9 @@ class LayerWiseDatasetv2Small(Dataset):
             pickle.dump(self.y_modelwise, f)
 
     def save_splits(self, *args, **kwargs):
+        """
+        Saves training, validation (if valid), and test splits for a given layer type.
+        """
         splits = {
             'train': (self.x_train, self.y_train),
             'test': (self.x_test, self.y_test)
@@ -167,6 +212,9 @@ class LayerWiseDatasetv2Small(Dataset):
             df.to_csv(f"{self.dataset_class}-{self.subset}-{kwargs['target_layer']}-{split}.csv")
 
 class LayerWiseDatasetv2Large(Dataset):
+    """
+    Model-aware layer-wise dataset class for the large version of the dataset.
+    """
     def __init__(self, **kwargs):
         super().__init__()
         self.dataset_class = 'LayerWiseDatasetv2Large'
@@ -204,6 +252,11 @@ class LayerWiseDatasetv2Large(Dataset):
             self.save_splits(**kwargs)
 
     def load_dataset(self, **kwargs):
+        """
+        Loads the previously saved raw dataset files or creates the raw datasets from scratch and saves them. The raw
+        dataset means that the model entities form a dataset and each entity consists of the layers with extracted features
+        as a sequence of lists.
+        """
         if kwargs['load_dataset'] and (os.path.isfile(kwargs['dataset_path_raw_x']) and os.path.isfile(kwargs['dataset_path_raw_y']) and os.path.isfile(kwargs['dataset_path_y_modelwise'])):
             self.load(**kwargs)
             print("Load_dataset successful!")
@@ -215,6 +268,9 @@ class LayerWiseDatasetv2Large(Dataset):
             self.save()
 
     def load_csv(self):
+        """
+        Loads the initial form of the dataset from the csv.
+        """
         raw_data = pd.read_csv(self.file_path)
         if self.subset == 'all':  # do nothing
             self.data = raw_data
@@ -222,6 +278,24 @@ class LayerWiseDatasetv2Large(Dataset):
             self.data = raw_data.loc[raw_data['result.type'] == self.subset]
 
     def get_raw_dataset(self, **kwargs):
+        """
+        Creates the raw dataset.
+
+            raw_x : [
+                [layer1_1, layer1_2, ..., layer1_m],
+                [layer2_1, layer2_2, ..., layer2_n],
+                ...
+                [layerN_1, layerN_2, ..., layerN_z]
+            ] where each layer is a list of extracted features.
+            raw_y: [
+                [y_1_1, y_1_2, ..., y_1_m],
+                [y_2_1, y_2_2, ..., y_2_n],
+                ...
+                [y_N_1, y_N_2, ..., y_N_z]
+            ]
+            y_modelwise: [Y_1, Y_2, ..., Y_N]
+
+        """
         x = []
         y_layerwise = []
         y_modelwise = []
@@ -262,6 +336,9 @@ class LayerWiseDatasetv2Large(Dataset):
         return x, y_layerwise, y_modelwise
 
     def get_raw_splits(self, **kwargs):
+        """
+        Splits the raw dataset into training, validation, and test sets without changing the format.
+        """
         x, y, y_modelwise = shuffle_iterables(True, 123, self.raw_x, self.raw_y, self.y_modelwise)
         self.raw_x_train, self.raw_x_test = split_2(x, split_ratio=kwargs['test_split'])
         self.raw_y_train, self.raw_y_test = split_2(y, split_ratio=kwargs['test_split'])
@@ -274,6 +351,10 @@ class LayerWiseDatasetv2Large(Dataset):
             self.raw_x_val, self.raw_y_val, self.y_modelwise_val = None, None, None
 
     def raw_split_to_training_split(self, raw_x_split, raw_y_split, **kwargs):
+        """
+        Converts a raw training/validation/test split into the form ready for training in a way that x contains the
+        layer instances and y contains corresponding power consumption values.
+        """
         target_layer = kwargs['target_layer']
         tmp_x = []
         tmp_y = []
@@ -289,12 +370,18 @@ class LayerWiseDatasetv2Large(Dataset):
         return tmp_x, tmp_y
 
     def preprocessing(self, x, y):
+        """
+        Preprocessing of the dataset.
+        """
         y = y * 1e9
         #y = np.abs(y)  # Take abs due to issues with CodeCarbon
         #y = (y - np.min(y)) / (np.max(y) - np.min(y))  # Normalize
         return x, y
 
     def load(self, *args, **kwargs):
+        """
+        Loads the raw dataset.
+        """
         import pickle
         dataset_path_raw_x = kwargs['dataset_path_raw_x']
         dataset_path_raw_y = kwargs['dataset_path_raw_y']
@@ -308,7 +395,7 @@ class LayerWiseDatasetv2Large(Dataset):
 
     def save(self):
         """
-        Saves the entire dataset. i.e. x and y
+        Saves the raw dataset.
         """
         import pickle
         with open(f'{self.dataset_class}-{self.subset}-raw_x.pkl', 'wb') as f:
@@ -319,6 +406,9 @@ class LayerWiseDatasetv2Large(Dataset):
             pickle.dump(self.y_modelwise, f)
 
     def save_splits(self, *args, **kwargs):
+        """
+        Saves training, validation (if valid), and test splits for a given layer type.
+        """
         splits = {
             'train': (self.x_train, self.y_train),
             'test': (self.x_test, self.y_test)
@@ -397,6 +487,9 @@ def shuffle_iterables(shuffle, seed, *args):
         return tuple(iters)
 
 class ModelWiseDataset(Dataset):
+    """
+    Model-wise dataset class.
+    """
     def __init__(self, **kwargs):
         super(ModelWiseDataset, self).__init__(kwargs['file_path'], kwargs['subset'])
         self.subset = kwargs['subset']

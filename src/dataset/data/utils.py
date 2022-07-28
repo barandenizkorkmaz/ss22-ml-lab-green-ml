@@ -99,6 +99,16 @@ def flatten(dataset):
     return flattened
 
 def extract_layer_features(layer):
+    """
+    Extract the features for a given type of layer.
+
+    Returns:
+        if successful:
+            list (features), string (layer type)
+        else:
+            False
+
+    """
     current_layer_type = layer.__class__.__name__.lower()
     layer_config = layer.get_config()
     if "dense" in current_layer_type:
@@ -209,6 +219,9 @@ def pad_to_dense(M):
     return Z
 
 def flatten_iterable(l):
+    """
+    Flattens any number of iterables recursively.
+    """
     import collections
     for el in l:
         if isinstance(el, collections.Iterable) and not isinstance(el, str):
@@ -218,6 +231,9 @@ def flatten_iterable(l):
             yield el
 
 def model_from_layer(layer):
+    """
+    Builds a model from a single layer.
+    """
     input_shape = layer.input_shape
     model = tf.keras.Sequential()
     model.add(layer)
